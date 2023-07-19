@@ -1,11 +1,12 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Source_Sans_3 } from "next/font/google";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import Navbar from "./components/Navbar/Navbar";
-import Container from "./components/Container";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const source = Source_Sans_3({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Next Sozluk",
@@ -19,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={source.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <Navbar />
           {children}
