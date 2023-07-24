@@ -25,7 +25,7 @@ const Categories = () => {
   const [categorySelected, setCategorySelected] = useState("");
 
   return (
-    <div className="flex flex-row gap-2 py-4 md:gap-4 lg:gap-20 justify-items-start">
+    <div className="flex flex-row gap-2 pt-4 md:gap-4 lg:gap-20 justify-items-start">
       {categories.map((item) => (
         <p
           onClick={() => {

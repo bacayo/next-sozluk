@@ -1,9 +1,23 @@
+// import getCurrentUser from "./actions/getCurrentUser";
 import Container from "./components/Container";
 
-export default function Home() {
+export default async function Home() {
+  // const currentUser = await getCurrentUser();
+  // console.log(currentUser);
+
   return (
     <Container>
-      <div>hello</div>
+      <div>
+        <p>1 page</p>
+        <p>main page</p>
+        <p>main page</p>
+        <p>main page</p>
+        <p>main page</p>
+        <p>main page</p>
+        <p>main page</p>
+        <p>main page</p>
+        <p>main page</p>
+      </div>
     </Container>
   );
 }
