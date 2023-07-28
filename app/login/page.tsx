@@ -13,9 +13,9 @@ const LoginPage = async () => {
 
   return (
     <Container>
-      <div className="pt-2 ">
+      <div className="pt-28">
         <p className="py-2 font-bold">Login</p>
-        <LoginForm session={session} />
+        <LoginForm />
       </div>
     </Container>
   );
