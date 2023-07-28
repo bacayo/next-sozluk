@@ -1,4 +1,4 @@
-import { Database } from "@/types/supabase";
+import { Database } from "@/lib/supabase";
 import {
   createServerActionClient,
   createServerComponentClient,
