@@ -1,6 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/app/hooks/reduxHooks";
+import { setCategory } from "@/app/redux/slices/setCategorySlice";
+
+import React from "react";
 
 export const categories = [
   {
@@ -22,19 +25,18 @@ export const categories = [
 ];
 
 const Categories = () => {
-  const [categorySelected, setCategorySelected] = useState("");
+  const { category } = useAppSelector((state) => state.setCategory);
+  const dispatch = useAppDispatch();
 
   return (
     <div className="flex flex-row gap-2 pt-4 md:gap-4 lg:gap-20 justify-items-start">
       {categories.map((item) => (
         <p
           onClick={() => {
-            setCategorySelected(item.label);
+            dispatch(setCategory(item.label));
           }}
           className={`px-4 border-b-8 cursor-pointer hover:border-b-8 hover:border-green-500 ${
-            categorySelected === item.label
-              ? "border-green-500"
-              : "border-neutral-800"
+            category === item.label ? "border-green-500" : "border-neutral-800"
           }`}
           key={item.label}
         >

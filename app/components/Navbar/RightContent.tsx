@@ -15,6 +15,7 @@ interface RightContentProps {
 
 const RightContent = ({ session }: RightContentProps) => {
   const router = useRouter();
+  const { supabase } = useSupabase();
 
   // const supabase = createClientComponentClient();
 
@@ -27,8 +28,6 @@ const RightContent = ({ session }: RightContentProps) => {
     }
   };
   // const session = false;
-
-  const { supabase } = useSupabase();
 
   // console.log(session);
 

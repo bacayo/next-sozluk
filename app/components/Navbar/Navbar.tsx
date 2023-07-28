@@ -16,7 +16,7 @@ interface NavbarProps {
 
 const Navbar = ({ session }: NavbarProps) => {
   return (
-    <div className="sticky top-0 z-20 w-full bg-neutral-800">
+    <div className="fixed top-0 z-20 w-full bg-neutral-800">
       <div className="py-2">
         <Container>
           <div className="flex flex-row items-center justify-between gap-2 md:gap-14 md:justify-items-start ">
