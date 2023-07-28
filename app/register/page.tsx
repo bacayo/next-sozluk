@@ -5,7 +5,7 @@ import RegisterForm from "./RegisterForm";
 const page = () => {
   return (
     <Container>
-      <div className="pt-2 ">
+      <div className="pt-28 ">
         <p className="py-2 text-lg font-bold">Register</p>
         <RegisterForm />
       </div>
