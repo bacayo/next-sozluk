@@ -5,9 +5,8 @@ import {
 } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
-const supabase = createClientComponentClient<Database>();
-
 export async function getEntriesByTopicId(topic_id: string) {
+  const supabase = createClientComponentClient<Database>();
   try {
     const { data: entries } = await supabase
       .from("topics")
@@ -20,15 +19,15 @@ export async function getEntriesByTopicId(topic_id: string) {
   }
 }
 
-export async function getRandomEntries() {
-  try {
-    const { data: randomEntries } = await supabase
-      .from("random_entries")
-      .select("*,profiles(*),topics(*)");
+// export async function getRandomEntries() {
+//   const supabase = createServerComponentClient<Database>({ cookies });
+//   try {
+//     const { data: randomEntries } = await supabase
+//       .from("random_entries")
+//       .select("*,profiles(*),topics(*)");
 
-    console.log(randomEntries);
-    return randomEntries;
-  } catch (error) {
-    console.log("Random Entry Error", error);
-  }
-}
+//     return randomEntries;
+//   } catch (error) {
+//     console.log("Random Entry Error", error);
+//   }
+// }

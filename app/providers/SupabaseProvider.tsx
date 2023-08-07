@@ -20,17 +20,17 @@ export default function SupabaseProvider({
   const [supabase] = useState(() => createPagesBrowserClient());
   const router = useRouter();
 
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN") router.refresh();
-    });
+  // useEffect(() => {
+  //   const {
+  //     data: { subscription },
+  //   } = supabase.auth.onAuthStateChange((event) => {
+  //     if (event === "SIGNED_IN") router.refresh();
+  //   });
 
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [router, supabase]);
+  //   return () => {
+  //     subscription.unsubscribe();
+  //   };
+  // }, [router, supabase]);
 
   return (
     <Context.Provider value={{ supabase }}>

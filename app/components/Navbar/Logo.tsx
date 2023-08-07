@@ -4,10 +4,11 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import AppLogo from "@/public/images/eksisozluk_logo.svg";
-import { getRandomEntries } from "@/app/actions/getEntriesByTopicId";
+// import { getRandomEntries } from "@/app/actions/getEntriesByTopicId";
 import { useAppDispatch } from "@/app/hooks/reduxHooks";
 import { setCategory } from "@/app/redux/slices/setCategorySlice";
 import { setTopicId } from "@/app/redux/slices/setTopicIdSlice";
+import { getRandomEntries } from "@/app/actions/getRandomEntries";
 
 const Logo = () => {
   const dispatch = useAppDispatch();

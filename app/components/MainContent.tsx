@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { getEntriesByTopicId } from "../actions/getEntriesByTopicId";
 import { useAppSelector } from "../hooks/reduxHooks";
-import {
-  getEntriesByTopicId,
-  getRandomEntries,
-} from "../actions/getEntriesByTopicId";
-import { TfiFacebook } from "react-icons/tfi";
-import { FaTwitter } from "react-icons/fa";
-import { FaChevronUp, FaChevronDown } from "react-icons/fa";
+import Entry from "./Topic/Entry";
+import Topic from "./Topic/Topic";
+import TopicBox from "./Topic/TopicBox";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 
 type Entry =
   | {
@@ -58,110 +58,47 @@ type RandomEntries =
     }[]
   | null;
 
-const MainContent = () => {
+interface MainContentProps {
+  randomEntries?: RandomEntries;
+}
+
+const MainContent = ({ randomEntries }: MainContentProps) => {
   const { topicId } = useAppSelector((state) => state.setTopicId);
   const [entry, setEntry] = useState<Entry>();
-  const [randomEntries, setRandomEntries] = useState<RandomEntries>();
 
+  // const supabase = createClientComponentClient<Database>();
+  const router = useRouter();
   useEffect(() => {
     const getEntries = async () => {
-      let entries = await getEntriesByTopicId(topicId as string);
-      const randomEntries = await getRandomEntries();
+      const entries = await getEntriesByTopicId(topicId as string);
       setEntry(entries);
-      setRandomEntries(randomEntries);
     };
-
-    getEntries();
-  }, [topicId]);
+    if (topicId) {
+      getEntries();
+      router.refresh();
+    }
+  }, [topicId, router]);
 
   if (!topicId) {
     return (
-      <div className="flex-grow text-gray-200">
+      <TopicBox>
         {randomEntries?.map((item) => (
           <div key={item.id}>
-            <h1 className="p-2 text-xl font-bold text-green-600 cursor-pointer hover:underline">
-              {item.topics?.title}
-            </h1>
-            <p className="p-2">{item.text}</p>
-            <div className="flex flex-row justify-between px-2">
-              <div className="flex items-center gap-3">
-                <TfiFacebook
-                  size={14}
-                  className="transition cursor-pointer hover:text-blue-600"
-                />
-                <FaTwitter
-                  size={14}
-                  className="transition cursor-pointer hover:text-sky-500"
-                />
-                <FaChevronUp
-                  size={16}
-                  className="transition cursor-pointer hover:text-green-500"
-                />
-                <FaChevronDown
-                  size={16}
-                  className="transition cursor-pointer hover:text-red-700"
-                />
-              </div>
-              <div className="flex flex-row items-center gap-2 text-sm ">
-                <p className="text-xs cursor-pointer hover:underline">
-                  {item.created_at}
-                </p>
-                <p className="text-green-600 cursor-pointer hover:underline">
-                  {item.profiles?.username}
-                </p>
-              </div>
-            </div>
+            <Topic topic={item.topics?.title} />
+            <Entry entry={item} />
           </div>
         ))}
-      </div>
+      </TopicBox>
     );
   }
 
   return (
     <div className="flex-grow text-gray-200">
       {entry?.map((item) => (
-        <h1
-          className="p-2 text-xl font-bold text-green-600 cursor-pointer hover:underline"
-          key={item.id}
-        >
-          {item.title.toLowerCase()}
-        </h1>
+        <Topic key={item.id} topic={item.title.toLowerCase()} />
       ))}
       {entry?.map((item) =>
-        item.entry.map((i) => (
-          <div key={i.id}>
-            <p className="p-2">{i.text}</p>
-            {/* entry bottom */}
-            <div className="flex flex-row justify-between px-2">
-              <div className="flex items-center gap-3">
-                <TfiFacebook
-                  size={14}
-                  className="transition cursor-pointer hover:text-blue-600"
-                />
-                <FaTwitter
-                  size={14}
-                  className="transition cursor-pointer hover:text-sky-500"
-                />
-                <FaChevronUp
-                  size={16}
-                  className="transition cursor-pointer hover:text-green-500"
-                />
-                <FaChevronDown
-                  size={16}
-                  className="transition cursor-pointer hover:text-red-700"
-                />
-              </div>
-              <div className="flex flex-row items-center gap-2 text-sm ">
-                <p className="text-xs cursor-pointer hover:underline">
-                  {i.created_at}
-                </p>
-                <p className="text-green-600 cursor-pointer hover:underline">
-                  {i.profiles?.username}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))
+        item.entry.map((i) => <Entry key={i.id} entry={i} />)
       )}
     </div>
   );
