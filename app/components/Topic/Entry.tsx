@@ -1,11 +1,24 @@
 "use client";
 
+import { useSupabase } from "@/app/providers/SupabaseProvider";
+import { Database } from "@/lib/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import React from "react";
 import { FaTwitter, FaChevronUp, FaChevronDown } from "react-icons/fa";
 import { TfiFacebook } from "react-icons/tfi";
 
 const Entry = ({ entry }: { entry: any }) => {
-  // console.log(new Date(entry.created_at));
+  const supabase = createClientComponentClient<Database>();
+
+  const handleVote = async (entryId: string) => {
+    await supabase.rpc("increment_entry_vote", { row_id: entryId });
+  };
+
+  const handleDecrementVote = async (entryId: string) => {
+    await supabase.rpc("decrement_entry_vote", {
+      row_id: entryId,
+    });
+  };
 
   return (
     <>
@@ -21,10 +34,12 @@ const Entry = ({ entry }: { entry: any }) => {
             className="transition cursor-pointer hover:text-sky-500"
           />
           <FaChevronUp
+            onClick={() => handleVote(entry.id)}
             size={16}
             className="transition cursor-pointer hover:text-green-500"
           />
           <FaChevronDown
+            onClick={() => handleDecrementVote(entry.id)}
             size={16}
             className="transition cursor-pointer hover:text-red-700"
           />
