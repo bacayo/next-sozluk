@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import setTopicIdReducer from "@/app/redux/slices/setTopicIdSlice";
 import setCategoryReducer from "@/app/redux/slices/setCategorySlice";
+import searchQueryDataReducer from "@/app/redux/slices/searchQuerySlice";
 
 export const store = configureStore({
   reducer: {
     setTopicId: setTopicIdReducer,
     setCategory: setCategoryReducer,
+    searchQuery: searchQueryDataReducer,
   },
 });
 
