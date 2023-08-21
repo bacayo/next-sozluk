@@ -6,9 +6,14 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { Input } from "../ui/Input";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/lib/supabase";
-import { useAppDispatch } from "@/app/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks/reduxHooks";
 import { setTopicId } from "@/app/redux/slices/setTopicIdSlice";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  getSearchQueryData,
+  resetSearchQueryState,
+  setSearchQueryString,
+} from "@/app/redux/slices/searchQuerySlice";
 
 interface SearchInputProps {
   placeholder?: string;
@@ -25,10 +30,12 @@ type Query =
   | null;
 
 const SearchInput = ({ placeholder }: SearchInputProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  let inputRef = useRef<HTMLInputElement>(null);
   const supabase = createClientComponentClient<Database>();
   const [query, setQuery] = useState<Query | []>([]);
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const router = useRouter();
 
   const searchQuery = useCallback(async () => {
@@ -46,6 +53,36 @@ const SearchInput = ({ placeholder }: SearchInputProps) => {
     return query;
   }, [supabase, query]);
 
+  const handleSearch = useCallback(async () => {
+    const { data, error, count, status, statusText } = await supabase
+      .from("topics")
+      .select("*")
+      .filter("title", "in", `(${inputRef.current?.value})`);
+
+    if (data?.length !== 0) {
+      const { id } = data![0];
+      dispatch(setTopicId(id));
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("topic", id);
+      dispatch(getSearchQueryData(data));
+      dispatch(setSearchQueryString(inputRef.current?.value));
+      //@ts-ignore
+      inputRef.current.value = null;
+      setQuery([]);
+      return params.toString();
+    } else if (data.length === 0) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("topic", inputRef.current?.value as string);
+      dispatch(getSearchQueryData(data));
+      dispatch(setSearchQueryString(inputRef.current?.value));
+      //@ts-ignore
+      inputRef.current.value = null;
+      return params.toString();
+    }
+
+    setQuery([]);
+  }, [dispatch, supabase, searchParams]);
+
   return (
     // <div className="relative flex items-center sm:w-4/5 lg:w-1/3 ">
     <div className="relative w-full lg:w-1/3">
@@ -56,6 +93,10 @@ const SearchInput = ({ placeholder }: SearchInputProps) => {
         placeholder={placeholder}
       />
       <AiOutlineSearch
+        onClick={async () => {
+          router.push(pathname + "?" + (await handleSearch()));
+          // await handleSearch();
+        }}
         size={24}
         className="absolute text-green-500 cursor-pointer right-2 bottom-2"
       />
@@ -63,9 +104,14 @@ const SearchInput = ({ placeholder }: SearchInputProps) => {
         <ul className="absolute w-full text-sm text-gray-200 border rounded-b border-neutral-500 bg-neutral-800">
           {query?.map((item) => (
             <li
-              onClick={() => {
+              onClick={async () => {
                 dispatch(setTopicId(item.id));
+                // dispatch(getSearchQueryData(undefined));
+                dispatch(resetSearchQueryState());
                 setQuery([]);
+                const params = new URLSearchParams(searchParams.toString());
+                params.set("topic", item.id);
+                router.push(pathname + "?" + params.toString());
                 //@ts-ignore
                 inputRef.current.value = null;
               }}
@@ -82,31 +128,3 @@ const SearchInput = ({ placeholder }: SearchInputProps) => {
 };
 
 export default SearchInput;
-
-// <div className="z-40 w-full ">
-//   {/* <div className="gap-1"> */}
-//   {/* 👇 Add "relative" class here */}
-//   <form className="relative">
-//     {/* <SearchDropdown /> */}
-//     {/* <input
-//       enterKeyHint="search"
-//       type="search"
-// className={`w-full bg-white px-4 py-2 text-gray-700  z-10 border focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40`}
-//       className=""
-//       placeholder="🔍 Search for products"
-//     /> */}
-//     <Input
-//       ref={inputRef}
-//       onChange={(e) => e.target.value}
-//       className="relative transition bg-gray-200 border-2 border-green-800 outline-none text-slate-900 focus-visible:ring-0 focus:border-green-400 placeholder:text-slate-900"
-//       placeholder={placeholder}
-//     />
-//     <ul className="absolute w-full overflow-hidden bg-white border-b border-l border-r rounded-bl-3xl rounded-br-3xl focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
-//       {/* 👆 Consider to add "overflow-hidden" class here */}
-//       <li className="p-2 px-4 text-gray-700 border-gray-300 cursor-pointer hover:bg-blue-400">
-//         sadsad
-//       </li>
-//     </ul>
-//   </form>
-//   {/* </div> */}
-// </div>
