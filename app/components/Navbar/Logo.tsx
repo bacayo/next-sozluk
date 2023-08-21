@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import AppLogo from "@/public/images/eksisozluk_logo.svg";
 import Image from "next/image";
 import Link from "next/link";
-import AppLogo from "@/public/images/eksisozluk_logo.svg";
-// import { getRandomEntries } from "@/app/actions/getEntriesByTopicId";
+import { getRandomEntries } from "@/app/actions/getRandomEntries";
 import { useAppDispatch } from "@/app/hooks/reduxHooks";
+import { getSearchQueryData } from "@/app/redux/slices/searchQuerySlice";
 import { setCategory } from "@/app/redux/slices/setCategorySlice";
 import { setTopicId } from "@/app/redux/slices/setTopicIdSlice";
-import { getRandomEntries } from "@/app/actions/getRandomEntries";
 
 const Logo = () => {
   const dispatch = useAppDispatch();
@@ -17,6 +16,7 @@ const Logo = () => {
     const randomEntries = await getRandomEntries();
     dispatch(setCategory(null));
     dispatch(setTopicId(null));
+    dispatch(getSearchQueryData(undefined));
     return randomEntries;
   };
 

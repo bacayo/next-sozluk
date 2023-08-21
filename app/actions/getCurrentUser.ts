@@ -1,8 +1,5 @@
 import { Database } from "@/lib/supabase";
-import {
-  createServerActionClient,
-  createServerComponentClient,
-} from "@supabase/auth-helpers-nextjs";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
 export async function getSession() {

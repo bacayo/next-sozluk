@@ -6,7 +6,6 @@ import { ThemeProvider } from "./providers/ThemeProvider";
 import { getSession } from "./actions/getCurrentUser";
 import SupabaseProvider from "./providers/SupabaseProvider";
 import ReduxProvider from "./providers/ReduxProvider";
-import { getRandomEntries } from "./actions/getEntriesByTopicId";
 
 const source = Source_Sans_3({ subsets: ["latin"] });
 
