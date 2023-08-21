@@ -1,67 +1,43 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
-import { useCallback } from "react";
-import { useAppDispatch } from "../hooks/reduxHooks";
+import { useCallback, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
+
+import { resetSearchQueryState } from "../redux/slices/searchQuerySlice";
 import { setTopicId } from "../redux/slices/setTopicIdSlice";
+import { Topics } from "@/types/types";
 
 interface SidebarProps {
   topics: Topics | undefined;
 }
 
-type Topics =
-  | {
-      created_at: string;
-      id: string;
-      title: string;
-      updated_at: string | null;
-      user_id: string;
-    }[]
-  | null;
-
 const Sidebar = ({ topics }: SidebarProps) => {
   const dispatch = useAppDispatch();
-  const params = useSearchParams();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const router = useRouter();
 
-  const handleClick = useCallback(
-    (item: any) => {
-      let currentQuery = {};
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
 
-      if (params) {
-        currentQuery = qs.parse(params.toString());
-      }
+      dispatch(setTopicId(value));
+      dispatch(resetSearchQueryState());
 
-      const updatedQuery: any = {
-        ...currentQuery,
-        // categorty: topics,
-        topic: item?.title.replace(/\s/g, ""),
-      };
-
-      const url = qs.stringifyUrl(
-        {
-          url: "/",
-          query: updatedQuery,
-        },
-        {
-          skipNull: true,
-          skipEmptyString: true,
-        }
-      );
-
-      router.push(url);
-      dispatch(setTopicId(item?.id));
+      return params.toString();
     },
-    [params, router, dispatch]
+    [searchParams, dispatch]
   );
-
   return (
-    <div className="flex flex-col items-start justify-start h-screen overflow-y-auto w-60">
+    <div className="flex-col items-start justify-start hidden h-screen overflow-y-auto md:flex w-60">
       {topics?.map((item) => (
         <p
           onClick={() => {
-            handleClick(item);
+            // handleClick(item);
+            router.push(pathname + "?" + createQueryString("topic", item.id));
           }}
           className="w-full p-2 cursor-pointer hover:bg-neutral-700"
           key={item.id}
