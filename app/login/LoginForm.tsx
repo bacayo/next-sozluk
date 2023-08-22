@@ -6,6 +6,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import AuthInput from "../components/Inputs/AuthInput";
 import OAuthButton from "../components/OAuthButton";
 import { RiGithubFill, RiGoogleFill } from "react-icons/ri";
+import { useToast } from "../components/ui/use-toast";
 
 const LoginForm = () => {
   const {
@@ -19,17 +20,35 @@ const LoginForm = () => {
     supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   });
   const router = useRouter();
+  const { toast } = useToast();
 
   const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
     // register with email and password
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       });
-      router.refresh();
-      router.push("/");
+      if (user) {
+        toast({
+          title: "Login succesful",
+          variant: "success",
+        });
+        router.refresh();
+        router.push("/");
+      }
+      if (error) {
+        toast({
+          title: error.message,
+          variant: "destructive",
+        });
+      }
+      // router.refresh();
+      // router.push("/");
     } catch (error) {
       console.log(error);
     }
@@ -73,6 +92,13 @@ const LoginForm = () => {
               },
             });
 
+            if (data) {
+              toast({
+                title: "Login succesful",
+                variant: "success",
+              });
+            }
+
             router.refresh();
             console.log(data, error);
           } catch (error: any) {
@@ -94,6 +120,12 @@ const LoginForm = () => {
               },
             });
             console.log({ data, error });
+            if (data) {
+              toast({
+                title: "Login succesful",
+                variant: "success",
+              });
+            }
           } catch (error: any) {
             throw new Error("Something went wrong", error);
           }

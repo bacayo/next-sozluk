@@ -8,6 +8,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { RiGoogleFill, RiGithubFill } from "react-icons/ri";
 
 import { useRouter } from "next/navigation";
+import { useToast } from "../components/ui/use-toast";
 
 const RegisterForm = () => {
   const {
@@ -18,26 +19,41 @@ const RegisterForm = () => {
 
   const supabase = createClientComponentClient();
   const router = useRouter();
-
+  const { toast } = useToast();
   console.log(errors);
 
   const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
     // register with email and password
+
+    console.log(errors);
+
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
-        // options: {
-        //   data: {
-        //     username: formData.username,
-        //   },
-        // },
+        options: {
+          data: {
+            username: formData.username,
+          },
+        },
       });
-      console.log({ data, error });
+      if (user?.identities?.length === 0) {
+        toast({
+          title: "Email already exist",
+          variant: "destructive",
+        });
+      }
+      console.log({ user, error });
       console.log({ formData });
+      console.log(errors);
+
       // router.push("/");
     } catch (error) {
       console.log(error);
+      console.log(errors);
     }
   };
 
@@ -48,7 +64,7 @@ const RegisterForm = () => {
         className="flex flex-col gap-4"
         action="submit"
       >
-        {/* <AuthInput
+        <AuthInput
           errors={errors}
           id="username"
           register={register}
@@ -56,7 +72,7 @@ const RegisterForm = () => {
           placeholder="username"
           type="text"
           description="the nickname that will represent you in the site. can be 3-35 characters long, can include only letters, numbers and spaces"
-        /> */}
+        />
         <AuthInput
           errors={errors}
           id="email"
