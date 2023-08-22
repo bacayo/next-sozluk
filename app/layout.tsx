@@ -6,6 +6,7 @@ import { ThemeProvider } from "./providers/ThemeProvider";
 import { getSession } from "./actions/getCurrentUser";
 import SupabaseProvider from "./providers/SupabaseProvider";
 import ReduxProvider from "./providers/ReduxProvider";
+import { Toaster } from "./components/ui/Toaster";
 
 const source = Source_Sans_3({ subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default async function RootLayout({
             <SupabaseProvider>
               <Navbar session={session} />
               {children}
+              <Toaster />
             </SupabaseProvider>
           </ThemeProvider>
         </ReduxProvider>
