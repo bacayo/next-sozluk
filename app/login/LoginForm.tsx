@@ -28,8 +28,6 @@ const LoginForm = () => {
         email: formData.email,
         password: formData.password,
       });
-
-      console.log("hello");
       router.refresh();
       router.push("/");
     } catch (error) {

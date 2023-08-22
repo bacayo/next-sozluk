@@ -19,20 +19,23 @@ const RegisterForm = () => {
   const supabase = createClientComponentClient();
   const router = useRouter();
 
+  console.log(errors);
+
   const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
     // register with email and password
     try {
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
-        options: {
-          data: {
-            username: formData.username,
-          },
-        },
+        // options: {
+        //   data: {
+        //     username: formData.username,
+        //   },
+        // },
       });
       console.log({ data, error });
-      router.push("/");
+      console.log({ formData });
+      // router.push("/");
     } catch (error) {
       console.log(error);
     }
@@ -45,7 +48,7 @@ const RegisterForm = () => {
         className="flex flex-col gap-4"
         action="submit"
       >
-        <AuthInput
+        {/* <AuthInput
           errors={errors}
           id="username"
           register={register}
@@ -53,7 +56,7 @@ const RegisterForm = () => {
           placeholder="username"
           type="text"
           description="the nickname that will represent you in the site. can be 3-35 characters long, can include only letters, numbers and spaces"
-        />
+        /> */}
         <AuthInput
           errors={errors}
           id="email"
