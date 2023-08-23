@@ -1,8 +1,16 @@
-import React from "react";
+"use client";
 
-const Topic = ({ topic }: { topic: any }) => {
+interface TopicProps {
+  topic: any;
+  onClick?: () => void;
+}
+
+const Topic = ({ topic, onClick }: TopicProps) => {
   return (
-    <h1 className="p-2 text-2xl font-bold text-green-600 cursor-pointer hover:underline">
+    <h1
+      onClick={onClick}
+      className="p-2 text-2xl font-bold text-green-600 cursor-pointer hover:underline"
+    >
       {topic}
     </h1>
   );
