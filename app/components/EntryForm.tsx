@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
 import { useSupabase } from "../providers/SupabaseProvider";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { setTopicId } from "../redux/slices/setTopicIdSlice";
+import { useToast } from "./ui/use-toast";
 
 const EntryForm = () => {
   const { searchQueryString, searchResponse } = useAppSelector(
@@ -19,30 +20,43 @@ const EntryForm = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const { toast } = useToast();
 
   const handleSubmitNewEntry = async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-    const { data, error, count, status, statusText } = await supabase
-      .from("entry")
-      .insert([
-        {
-          text: inputRef.current?.value,
-          user_id: session?.user.id as string,
-          topic_id: topicId as string,
-        },
-      ])
-      .select();
+      if (inputRef.current?.value === "" || inputRef.current?.value === null) {
+        toast({
+          title: "Entry cannot be empty",
+          variant: "destructive",
+        });
+      } else {
+        const { data, error, count, status, statusText } = await supabase
+          .from("entry")
+          .insert([
+            {
+              text: inputRef.current?.value,
+              user_id: session?.user.id as string,
+              topic_id: topicId as string,
+            },
+          ])
+          .select();
 
-    router.refresh();
-    //@ts-ignore
-    if (inputRef.current?.value) {
-      inputRef.current.value = "";
-    }
+        toast({
+          title: "Entry success",
+          variant: "success",
+        });
+        router.refresh();
+      }
 
-    // router.refresh();
+      //@ts-ignore
+      if (inputRef.current?.value) {
+        inputRef.current.value = "";
+      }
+    } catch (error) {}
   };
 
   const handleSubmitNewTopic = async () => {
@@ -85,11 +99,21 @@ const EntryForm = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      <Textarea
-        ref={inputRef}
-        placeholder={`Express your thoughts on ${searchQueryString}`}
-        className="h-20 text-gray-200 transition-[height] duration-500 ease-in border-2 focus:h-80 border-neutral-600 focus:border-emerald-600 focus-visible:ring-0 placeholder:text-gray-400"
-      />
+      <div className="flex flex-col px-3 pb-4 bg-neutral-800">
+        <div className="flex items-center justify-start h-12 gap-2 ">
+          <button className="px-2 py-1 text-sm rounded bg-neutral-700">
+            http://
+          </button>
+          <button className="px-2 py-1 text-sm rounded bg-neutral-700">
+            --spoiler--
+          </button>
+        </div>
+        <Textarea
+          ref={inputRef}
+          placeholder={`Express your thoughts on ${searchQueryString}`}
+          className="h-20 text-gray-200 transition-[height] duration-500 ease-in border-2 focus:h-80 border-neutral-600 focus:border-emerald-600 focus-visible:ring-0 placeholder:text-gray-400"
+        />
+      </div>
       <Button
         onClick={() => {
           searchResponse?.length === 0
