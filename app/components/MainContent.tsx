@@ -2,12 +2,14 @@
 
 import { Session } from "@supabase/supabase-js";
 import { IEntriesParams } from "../actions/getEntriesByTopicId";
-import { useAppSelector } from "../hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
 import EntryForm from "./EntryForm";
 import Entry from "./Topic/Entry";
 import Topic from "./Topic/Topic";
 import TopicBox from "./Topic/TopicBox";
 import { RandomEntries, EntryT } from "@/types/types";
+import { setTopicId } from "../redux/slices/setTopicIdSlice";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface MainContentProps {
   randomEntries?: RandomEntries;
@@ -24,6 +26,10 @@ const MainContent = ({
 }: MainContentProps) => {
   const { topicId } = useAppSelector((state) => state.setTopicId);
   const { searchQueryString } = useAppSelector((state) => state.searchQuery);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
 
   if (searchParams!["topic" as keyof typeof searchParams] === topicId)
     return (
@@ -49,7 +55,15 @@ const MainContent = ({
       <TopicBox>
         {randomEntries?.map((item) => (
           <div key={item.id}>
-            <Topic topic={item.topics?.title} />
+            <Topic
+              onClick={() => {
+                dispatch(setTopicId(item.topic_id));
+                const param = new URLSearchParams(params.toString());
+                param.set("topic", item.topic_id as string);
+                router.push(pathname + "?" + param);
+              }}
+              topic={item.topics?.title}
+            />
             <Entry entry={item} />
           </div>
         ))}
