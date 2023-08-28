@@ -5,7 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import { getSession } from "./actions/getCurrentUser";
 import SupabaseProvider from "./providers/SupabaseProvider";
-import ReduxProvider from "./providers/ReduxProvider";
+// import ReduxProvider from "./providers/ReduxProvider";
 import { Toaster } from "./components/ui/Toaster";
 
 const source = Source_Sans_3({ subsets: ["latin"] });
@@ -25,15 +25,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={source.className}>
-        <ReduxProvider>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-            <SupabaseProvider>
-              <Navbar session={session} />
-              {children}
-              <Toaster />
-            </SupabaseProvider>
-          </ThemeProvider>
-        </ReduxProvider>
+        {/* <ReduxProvider> */}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <SupabaseProvider>
+            <Navbar session={session} />
+            {children}
+            <Toaster />
+          </SupabaseProvider>
+        </ThemeProvider>
+        {/* </ReduxProvider> */}
       </body>
     </html>
   );
