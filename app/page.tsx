@@ -7,11 +7,7 @@ import MainContent from "./components/MainContent";
 import Sidebar from "./components/Sidebar";
 import { IEntriesParams } from "./actions/getEntriesByTopicId";
 
-interface HomeParams {
-  searchParams: IEntriesParams;
-}
-
-export default async function Home({ searchParams }: HomeParams) {
+export default async function Home() {
   const supabase = createServerComponentClient<Database>({ cookies });
 
   const { data: topics } = await supabase.from("topics").select("*");
@@ -20,26 +16,16 @@ export default async function Home({ searchParams }: HomeParams) {
     .from("random_entries")
     .select("*,profiles(*),topics(*)");
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  const { data: entries } = await supabase
-    .from("topics")
-    .select(`*,entry(*,profiles(*))`)
-    .eq("id", searchParams["topic" as keyof typeof searchParams]);
+  // const {
+  //   data: { session },
+  // } = await supabase.auth.getSession();
 
   return (
     <Container>
       <div className="pt-28" />
       <div className="flex flex-row ">
         <Sidebar topics={topics} />
-        <MainContent
-          randomEntries={randomEntries}
-          entries={entries}
-          searchParams={searchParams}
-          session={session}
-        />
+        <MainContent randomEntries={randomEntries} />
       </div>
     </Container>
   );

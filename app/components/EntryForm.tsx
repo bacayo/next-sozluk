@@ -1,25 +1,25 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { Textarea } from "./ui/Textarea";
-import { Button } from "./ui/Button";
-import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
 import { useSupabase } from "../providers/SupabaseProvider";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { setTopicId } from "../redux/slices/setTopicIdSlice";
+import { Button } from "./ui/Button";
+import { Textarea } from "./ui/Textarea";
 import { useToast } from "./ui/use-toast";
 
-const EntryForm = () => {
-  const { searchQueryString, searchResponse } = useAppSelector(
-    (state) => state.searchQuery
-  );
+interface EntryFormProps {
+  params?: {
+    slug: string;
+  };
+  searchParams?: {
+    q: string;
+  };
+}
+
+const EntryForm = ({ params, searchParams }: EntryFormProps) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { supabase } = useSupabase();
-  const { topicId } = useAppSelector((state) => state.setTopicId);
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
   const { toast } = useToast();
 
   const handleSubmitNewEntry = async () => {
@@ -40,10 +40,13 @@ const EntryForm = () => {
             {
               text: inputRef.current?.value,
               user_id: session?.user.id as string,
-              topic_id: topicId as string,
+              // topic_id: topicId as string,
+              topic_id: params!.slug[0],
             },
           ])
           .select();
+
+        console.log({ data, error, status, statusText });
 
         toast({
           title: "Entry success",
@@ -74,7 +77,7 @@ const EntryForm = () => {
       .from("topics")
       .upsert({
         user_id: session?.user.id as string,
-        title: searchQueryString as string,
+        title: searchParams?.q as string,
       })
       .select("*");
 
@@ -87,11 +90,7 @@ const EntryForm = () => {
           text: inputRef.current?.value,
         })
         .select("*");
-
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("topic", newTopic[0].id);
-      router.push(pathname + "?" + params.toString());
-      dispatch(setTopicId(newTopic[0].id));
+      router.push(`/topic/${newTopic[0].id}`);
     }
 
     router.refresh();
@@ -110,15 +109,13 @@ const EntryForm = () => {
         </div>
         <Textarea
           ref={inputRef}
-          placeholder={`Express your thoughts on ${searchQueryString}`}
+          placeholder={`Express your thoughts on ${searchParams?.q}`}
           className="h-20 text-gray-200 transition-[height] duration-500 ease-in border-2 focus:h-80 border-neutral-600 focus:border-emerald-600 focus-visible:ring-0 placeholder:text-gray-400"
         />
       </div>
       <Button
         onClick={() => {
-          searchResponse?.length === 0
-            ? handleSubmitNewTopic()
-            : handleSubmitNewEntry();
+          !params ? handleSubmitNewTopic() : handleSubmitNewEntry();
         }}
         className="self-end w-20 text-gray-200 transition bg-emerald-600 hover:bg-emerald-600 hover:text-gray-400"
       >
