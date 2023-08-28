@@ -1,9 +1,7 @@
 "use client";
 
-import { useAppDispatch, useAppSelector } from "@/app/hooks/reduxHooks";
-import { setCategory } from "@/app/redux/slices/setCategorySlice";
 
-import React from "react";
+import { useState } from "react";
 
 export const categories = [
   {
@@ -24,16 +22,20 @@ export const categories = [
   },
 ];
 
+type Categories = "popular" | "top" | "politics" | "programming";
+
 const Categories = () => {
-  const { category } = useAppSelector((state) => state.setCategory);
-  const dispatch = useAppDispatch();
+  // const { category } = useAppSelector((state) => state.setCategory);
+  // const dispatch = useAppDispatch();
+  const [category, setCategory] = useState<Categories>("popular");
 
   return (
     <div className="flex flex-row gap-2 pt-4 md:gap-4 lg:gap-20 justify-items-start">
       {categories.map((item) => (
         <p
           onClick={() => {
-            dispatch(setCategory(item.label));
+            // dispatch(setCategory(item.label));
+            setCategory(item.label as Categories);
           }}
           className={`px-4 border-b-8 cursor-pointer hover:border-b-8 hover:border-green-500 ${
             category === item.label ? "border-green-500" : "border-neutral-800"
