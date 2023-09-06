@@ -1,13 +1,36 @@
 import Container from "@/app/components/Container";
 import EntryForm from "@/app/components/EntryForm";
-import MainContent from "@/app/components/MainContent";
 import Sidebar from "@/app/components/Sidebar";
 import Entry from "@/app/components/Topic/Entry";
 import Topic from "@/app/components/Topic/Topic";
 import { Database } from "@/lib/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import React from "react";
+
+type TestEntries =
+  | {
+      created_at: string;
+      id: string;
+      title: string;
+      updated_at: string | null;
+      user_id: string;
+      entry: {
+        created_at: string;
+        id: string;
+        text: string;
+        topic_id: string;
+        updated_at: string | null;
+        user_id: string;
+        vote: number;
+        favorites: {
+          created_at: string;
+          entryId: string | null;
+          id: string | null;
+          userId: string | null;
+        }[];
+      }[];
+    }[]
+  | null;
 
 const TopicPage = async ({ params }: { params: { slug: string } }) => {
   const supabase = createServerComponentClient<Database>({ cookies });
@@ -16,7 +39,7 @@ const TopicPage = async ({ params }: { params: { slug: string } }) => {
 
   const { data: entries } = await supabase
     .from("topics")
-    .select(`*,entry(*,profiles(*))`)
+    .select("*,entry(*,favorites(*))")
     .eq("id", params.slug);
 
   const {
@@ -35,7 +58,7 @@ const TopicPage = async ({ params }: { params: { slug: string } }) => {
                 <div key={entry.id}>
                   <Topic topic={entry.title} />
                   {entry.entry.map((item) => (
-                    <Entry key={item.id} entry={item} />
+                    <Entry session={session} key={item.id} entry={item} />
                   ))}
                 </div>
               ))}
