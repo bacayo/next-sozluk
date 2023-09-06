@@ -30,18 +30,19 @@ export type RandomEntries =
       topic_id: string | null;
       updated_at: string | null;
       user_id: string | null;
-      profiles: {
-        avatar_url: string | null;
-        id: string;
-        updated_at: string | null;
-        username: string | null;
-      } | null;
+      favorites: {}[];
       topics: {
         created_at: string;
         id: string;
         title: string;
         updated_at: string | null;
         user_id: string;
+      } | null;
+      profiles: {
+        avatar_url: string | null;
+        id: string;
+        updated_at: string | null;
+        username: string | null;
       } | null;
     }[]
   | null;
