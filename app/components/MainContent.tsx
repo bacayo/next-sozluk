@@ -5,25 +5,27 @@ import { useRouter } from "next/navigation";
 import Entry from "./Topic/Entry";
 import Topic from "./Topic/Topic";
 import TopicBox from "./Topic/TopicBox";
+import { Session } from "@supabase/supabase-js";
 
 interface MainContentProps {
   randomEntries?: RandomEntries;
+  session?: Session | null;
 }
 
-const MainContent = ({ randomEntries }: MainContentProps) => {
+const MainContent = ({ randomEntries, session }: MainContentProps) => {
   const router = useRouter();
 
   return (
     <TopicBox>
-      {randomEntries?.map((item) => (
-        <div key={item.id}>
+      {randomEntries?.map((entry) => (
+        <div key={entry.id}>
           <Topic
+            topic={entry.topics?.title}
             onClick={() => {
-              router.push(`/topic/${item.topic_id}`);
+              router.push(`/topic/${entry.topic_id}`);
             }}
-            topic={item.topics?.title}
           />
-          <Entry entry={item} />
+          <Entry session={session} entry={entry} />
         </div>
       ))}
     </TopicBox>

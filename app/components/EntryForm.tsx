@@ -22,6 +22,7 @@ const EntryForm = ({ params, searchParams }: EntryFormProps) => {
   const router = useRouter();
   const { toast } = useToast();
 
+  //* create new entry
   const handleSubmitNewEntry = async () => {
     try {
       const {
@@ -62,6 +63,7 @@ const EntryForm = ({ params, searchParams }: EntryFormProps) => {
     } catch (error) {}
   };
 
+  //* create new topic with entry
   const handleSubmitNewTopic = async () => {
     const {
       data: { session },
