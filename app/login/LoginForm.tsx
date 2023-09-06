@@ -98,9 +98,7 @@ const LoginForm = () => {
                 variant: "success",
               });
             }
-
             router.refresh();
-            console.log(data, error);
           } catch (error: any) {
             throw new Error("Something went wrong", error);
           }
