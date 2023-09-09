@@ -15,10 +15,7 @@ const LoginForm = () => {
     formState: { errors },
   } = useForm<FieldValues>();
 
-  const supabase = createClientComponentClient({
-    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  });
+  const supabase = createClientComponentClient();
   const router = useRouter();
   const { toast } = useToast();
 
