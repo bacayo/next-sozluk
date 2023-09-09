@@ -5,6 +5,7 @@ import {
   Session,
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { FaChevronDown, FaChevronUp, FaTwitter } from "react-icons/fa";
@@ -114,9 +115,15 @@ const Entry = ({ entry, session }: EntryProps) => {
             {/* {`${new Date(entry.created_at).toLocaleString()}`} */}
             {entry.created_at}
           </p>
-          <p className="text-green-600 cursor-pointer hover:underline">
+          <Link
+            // onClick={() => {
+            //   router.push(`/author/${entry?.profiles.username}/`);
+            // }}
+            href={`/author/${entry?.profiles.username}`}
+            className="text-green-600 cursor-pointer hover:underline"
+          >
             {entry.profiles?.username}
-          </p>
+          </Link>
         </div>
       </div>
     </>
