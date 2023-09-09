@@ -8,7 +8,7 @@ const Logo = () => {
   return (
     <Link href="/">
       <Image
-        className="hidden cursor-pointer lg:flex"
+        className="cursor-pointer lg:flex"
         height={100}
         width={150}
         alt="logo"

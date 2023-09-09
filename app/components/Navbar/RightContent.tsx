@@ -1,12 +1,13 @@
 "use client";
 
 import { Session, User } from "@supabase/supabase-js";
-import { RiAccountCircleLine } from "react-icons/ri";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import React, { useEffect, useState } from "react";
-
-import { useRouter } from "next/navigation";
 import { useSupabase } from "@/app/providers/SupabaseProvider";
+import { Bookmark, Mail } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+import { Button } from "../ui/Button";
+import Menu from "./Menu";
+import ProfileDropdownMenu from "./ProfileDropdownMenu";
 
 interface RightContentProps {
   currentUser?: User | undefined;
@@ -17,8 +18,6 @@ const RightContent = ({ session }: RightContentProps) => {
   const router = useRouter();
   const { supabase } = useSupabase();
 
-  // const supabase = createClientComponentClient();
-
   const handleSignout = async () => {
     try {
       await supabase.auth.signOut();
@@ -27,46 +26,43 @@ const RightContent = ({ session }: RightContentProps) => {
       console.log(error);
     }
   };
-  // const session = false;
-
-  // console.log(session);
 
   return (
-    <div className="flex gap-6 text-neutral-300 ">
-      {!session ? (
-        <>
-          <div
-            onClick={() => {
-              router.push("/register");
-            }}
-            className="transition cursor-pointer hover:underline hover:text-green-700"
-          >
-            register
-          </div>
-          <div
-            onClick={() => {
-              router.push("/login");
-            }}
-            className="transition cursor-pointer hover:underline hover:text-green-700"
-          >
-            login
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="flex items-center gap-2 transition cursor-pointer hover:text-green-700 ">
-            <RiAccountCircleLine size={24} />
-            <p>me</p>
-          </div>
-          <p
-            onClick={handleSignout}
-            className="transition cursor-pointer hover:text-green-700"
-          >
-            Logout
-          </p>
-        </>
-      )}
-    </div>
+    <>
+      <div className="hidden gap-1 lg:flex text-neutral-300 ">
+        {!session ? (
+          <>
+            <div
+              onClick={() => {
+                router.push("/register");
+              }}
+              className="transition cursor-pointer hover:underline hover:text-green-700"
+            >
+              register
+            </div>
+            <div
+              onClick={() => {
+                router.push("/login");
+              }}
+              className="transition cursor-pointer hover:underline hover:text-green-700"
+            >
+              login
+            </div>
+          </>
+        ) : (
+          <>
+            <Button className="text-gray-200 transition bg-neutral-800 hover:bg-neutral-800 hover:text-emerald-600">
+              <Bookmark size={28} className="pr-1" /> activity
+            </Button>
+            <Button className="text-gray-200 transition bg-neutral-800 hover:bg-neutral-800 hover:text-emerald-600 focus-visible:ring-0 focus-visible:ring-offset-0">
+              <Mail size={28} className="pr-1" /> messages
+            </Button>
+            <ProfileDropdownMenu onClick={handleSignout} />
+          </>
+        )}
+      </div>
+      <Menu session={session} />
+    </>
   );
 };
 
