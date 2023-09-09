@@ -16,19 +16,21 @@ const MainContent = ({ randomEntries, session }: MainContentProps) => {
   const router = useRouter();
 
   return (
-    <TopicBox>
-      {randomEntries?.map((entry) => (
-        <div key={entry.id}>
-          <Topic
-            topic={entry.topics?.title}
-            onClick={() => {
-              router.push(`/topic/${entry.topic_id}`);
-            }}
-          />
-          <Entry session={session} entry={entry} />
-        </div>
-      ))}
-    </TopicBox>
+    <div className="flex-grow mx-auto lg:ml-64 ">
+      <TopicBox>
+        {randomEntries?.map((entry) => (
+          <div key={entry.id}>
+            <Topic
+              topic={entry.topics?.title}
+              onClick={() => {
+                router.push(`/topic/${entry.topic_id}`);
+              }}
+            />
+            <Entry session={session} entry={entry} />
+          </div>
+        ))}
+      </TopicBox>
+    </div>
   );
 };
 
