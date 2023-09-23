@@ -1,3 +1,5 @@
+"use client";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,12 +19,27 @@ import {
 } from "lucide-react";
 
 import { Button } from "../ui/Button";
+import Link from "next/link";
+import { Session } from "@supabase/supabase-js";
+
+export type Profile = {
+  avatar_url: string | null;
+  id: string;
+  updated_at: string | null;
+  username: string | null;
+} | null;
 
 interface ProfileDropdownMenuProps {
   onClick: () => void;
+  session: Session;
+  profile: Profile;
 }
 
-const ProfileDropdownMenu = ({ onClick }: ProfileDropdownMenuProps) => {
+const ProfileDropdownMenu = ({
+  onClick,
+  session,
+  profile,
+}: ProfileDropdownMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -35,10 +52,12 @@ const ProfileDropdownMenu = ({ onClick }: ProfileDropdownMenuProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 shadow shadow-neutral-700 border-neutral-800 bg-neutral-800 ">
         <DropdownMenuGroup>
-          <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
-            <UserCircle2 className="w-4 h-4 mr-2" />
-            <span>my profile</span>
-          </DropdownMenuItem>
+          <Link href={`/author/${profile?.username}`}>
+            <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
+              <UserCircle2 className="w-4 h-4 mr-2" />
+              <span>my profile</span>
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
             <Settings className="w-4 h-4 mr-2" />
             <span>settings</span>

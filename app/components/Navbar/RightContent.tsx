@@ -7,14 +7,15 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "../ui/Button";
 import Menu from "./Menu";
-import ProfileDropdownMenu from "./ProfileDropdownMenu";
+import ProfileDropdownMenu, { Profile } from "./ProfileDropdownMenu";
 
 interface RightContentProps {
   currentUser?: User | undefined;
   session: Session | null;
+  profile: Profile;
 }
 
-const RightContent = ({ session }: RightContentProps) => {
+const RightContent = ({ session, profile }: RightContentProps) => {
   const router = useRouter();
   const { supabase } = useSupabase();
 
@@ -57,7 +58,11 @@ const RightContent = ({ session }: RightContentProps) => {
             <Button className="text-gray-200 transition bg-neutral-800 hover:bg-neutral-800 hover:text-emerald-600 focus-visible:ring-0 focus-visible:ring-offset-0">
               <Mail size={28} className="pr-1" /> messages
             </Button>
-            <ProfileDropdownMenu onClick={handleSignout} />
+            <ProfileDropdownMenu
+              onClick={handleSignout}
+              session={session}
+              profile={profile}
+            />
           </>
         )}
       </div>

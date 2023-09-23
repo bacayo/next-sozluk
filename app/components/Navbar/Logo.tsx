@@ -3,13 +3,21 @@
 import AppLogo from "@/public/images/eksisozluk_logo.svg";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Logo = () => {
+  const router = useRouter();
+
   return (
-    <Link href="/">
+    <Link
+      onClick={() => {
+        router.refresh();
+      }}
+      href="/"
+    >
       <Image
-        className="cursor-pointer lg:flex"
-        height={100}
+        className="cursor-pointer "
+        height={150}
         width={150}
         alt="logo"
         src={AppLogo}
