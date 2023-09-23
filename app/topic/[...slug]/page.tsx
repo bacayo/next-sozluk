@@ -11,14 +11,14 @@ const TopicPage = async ({ params }: { params: { slug: string } }) => {
   const { data: entries } = await supabase
     .from("topics")
     .select("*,entry(*,favorites(*),profiles(*))")
-    .eq("id", params.slug);
+    .eq("title", decodeURIComponent(params.slug).replaceAll("-", " "));
 
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
   return (
-    <div className="flex flex-col flex-grow gap-4 lg:ml-64 ">
+    <div className="flex flex-col flex-grow gap-4 mt-4 lg:ml-64 ">
       <div>
         {entries?.map((entry) => (
           <div key={entry.id}>
