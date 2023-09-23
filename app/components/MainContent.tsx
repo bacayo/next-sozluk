@@ -16,14 +16,16 @@ const MainContent = ({ randomEntries, session }: MainContentProps) => {
   const router = useRouter();
 
   return (
-    <div className="flex-grow mx-auto lg:ml-64 ">
+    <div className="flex-grow mx-auto mt-4 lg:ml-64 ">
       <TopicBox>
         {randomEntries?.map((entry) => (
           <div key={entry.id}>
             <Topic
               topic={entry.topics?.title}
               onClick={() => {
-                router.push(`/topic/${entry.topic_id}`);
+                router.push(
+                  `/topic/${entry.topics?.title.replaceAll(" ", "-")}`
+                );
               }}
             />
             <Entry session={session} entry={entry} />
