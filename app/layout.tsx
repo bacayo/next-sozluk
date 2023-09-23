@@ -26,11 +26,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const supabase = createServerComponentClient<Database>({ cookies });
-  
-
   const session = await getSession();
 
   const { data: topics } = await supabase.from("topics").select("*");
+
+  const { data: myProfile } = await supabase
+    .from("profiles")
+    .select()
+    .match({ id: session?.user.id })
+    .single();
 
   return (
     <html lang="en">
@@ -38,7 +42,7 @@ export default async function RootLayout({
         {/* <ReduxProvider> */}
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <SupabaseProvider>
-            <Navbar session={session} />
+            <Navbar session={session} profile={myProfile} />
             <Container>
               <Sidebar topics={topics} />
               {children}
