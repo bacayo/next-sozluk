@@ -5,6 +5,7 @@ import {
   Session,
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
+import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
@@ -58,11 +59,47 @@ const Entry = ({ entry, session }: EntryProps) => {
     return x.length;
   }, [entry, session]);
 
+  const entryDate = useMemo(() => {
+    const entryDate = new Date(entry?.created_at);
+    const result = format(entryDate, "MMM d, yyyy hh:mm aaaa");
+    return result;
+  }, [entry]);
+
+  // const regex = /\[([^\]]+) ([^\]]+)\]/g;
+  // const spoilerRegex = /--`spoiler`--(.*?)--`spoiler`--/gs;
+
+  const formattedText = useMemo(() => {
+    const linkRegex = /\[([^\]]+) ([^\]]+)\]/g;
+    const spoilerRegex = /--`spoiler`--/g;
+    const placeholderRegex = /`:(.*?)`/;
+
+    const formatted = entry.text
+      .replace(linkRegex, (_: any, linkText: string, linkURL: string) => {
+        return `<a target="blank" href="${linkText}" style="color: #10b981; cursor: pointer;">${linkURL}</a>`;
+      })
+      .replace(
+        spoilerRegex,
+        '<span style="color: #10b981; cursor: pointer; display:flex; flex-direction:column">--spoiler--</span>'
+      )
+      .replace(placeholderRegex, (text: string) => {
+        const extractedText = text.match(placeholderRegex);
+        if (extractedText) {
+          return `<a style="color: #10b981; cursor: pointer;" href="/topic/${extractedText[1]}">*</a>`;
+        }
+      });
+
+    return formatted;
+  }, [entry]);
+
   return (
     <>
-      <p className="p-2">{entry.text}</p>
-      <div className="flex flex-row justify-between px-2">
-        <div className="flex items-center gap-3">
+      <div
+        className="p-2"
+        dangerouslySetInnerHTML={{ __html: formattedText }}
+      />
+
+      <div className="flex flex-row justify-between px-2 pt-2 ">
+        <div className="flex items-center gap-3 ">
           <TfiFacebook
             title="share to facebook"
             size={14}
@@ -111,16 +148,13 @@ const Entry = ({ entry, session }: EntryProps) => {
           )}
         </div>
         <div className="flex flex-row items-center gap-2 text-sm ">
-          <p className="text-xs cursor-pointer hover:underline">
-            {/* {`${new Date(entry.created_at).toLocaleString()}`} */}
-            {entry.created_at}
-          </p>
+          <p className="text-xs cursor-pointer hover:underline ">{entryDate}</p>
           <Link
             // onClick={() => {
             //   router.push(`/author/${entry?.profiles.username}/`);
             // }}
             href={`/author/${entry?.profiles.username}`}
-            className="text-green-600 cursor-pointer hover:underline"
+            className="cursor-pointer text-emerald-600 hover:underline"
           >
             {entry.profiles?.username}
           </Link>
