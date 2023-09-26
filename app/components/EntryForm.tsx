@@ -6,6 +6,38 @@ import { useSupabase } from "../providers/SupabaseProvider";
 import { Button } from "./ui/Button";
 import { Textarea } from "./ui/Textarea";
 import { useToast } from "./ui/use-toast";
+import { Entry } from "@/types/types";
+
+type Entries =
+  | {
+      created_at: string;
+      id: string;
+      title: string;
+      updated_at: string | null;
+      user_id: string;
+      entry: {
+        created_at: string;
+        id: string;
+        text: string;
+        topic_id: string;
+        updated_at: string | null;
+        user_id: string;
+        vote: number;
+        favorites: {
+          created_at: string;
+          entryId: string | null;
+          id: string | null;
+          userId: string | null;
+        }[];
+        profiles: {
+          avatar_url: string | null;
+          id: string;
+          updated_at: string | null;
+          username: string | null;
+        } | null;
+      }[];
+    }[]
+  | null;
 
 interface EntryFormProps {
   params?: {
@@ -14,9 +46,10 @@ interface EntryFormProps {
   searchParams?: {
     q: string;
   };
+  entry?: Entries;
 }
 
-const EntryForm = ({ params, searchParams }: EntryFormProps) => {
+const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { supabase } = useSupabase();
   const router = useRouter();
@@ -42,7 +75,7 @@ const EntryForm = ({ params, searchParams }: EntryFormProps) => {
               text: inputRef.current?.value,
               user_id: session?.user.id as string,
               // topic_id: topicId as string,
-              topic_id: params!.slug[0],
+              topic_id: entry![0].id,
             },
           ])
           .select();
@@ -92,7 +125,7 @@ const EntryForm = ({ params, searchParams }: EntryFormProps) => {
           text: inputRef.current?.value,
         })
         .select("*");
-      router.push(`/topic/${newTopic[0].id}`);
+      router.push(`/topic/${newTopic[0].title}`);
     }
 
     router.refresh();
