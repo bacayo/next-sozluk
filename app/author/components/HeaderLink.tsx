@@ -35,7 +35,7 @@ const HeaderLink = ({ author }: HeaderLinkProps) => {
   }, [author]);
 
   return (
-    <div className="mt-4">
+    <div className="">
       <Link
         href="/"
         className="text-2xl font-bold hover:underline text-emerald-500 hover:text-emerald-600"
