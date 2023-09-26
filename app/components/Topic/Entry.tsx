@@ -12,6 +12,22 @@ import { useMemo } from "react";
 import { FaChevronDown, FaChevronUp, FaTwitter } from "react-icons/fa";
 import { FiStar } from "react-icons/fi";
 import { TfiFacebook } from "react-icons/tfi";
+import { BsThreeDots } from "react-icons/bs";
+import { BiBlock } from "react-icons/bi";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "../ui/DropdownMenu";
+import { CreditCard, Flag, Keyboard, Settings, Mail } from "lucide-react";
+import { Button } from "../ui/Button";
+import {
+  DropdownMenuAuthor,
+  DropdownMenuEntry,
+} from "../DropdownMenuComponent";
 
 interface EntryProps {
   entry: any;
@@ -94,7 +110,7 @@ const Entry = ({ entry, session }: EntryProps) => {
   return (
     <>
       <div
-        className="p-2"
+        className="p-2 whitespace-pre-line"
         dangerouslySetInnerHTML={{ __html: formattedText }}
       />
 
@@ -150,14 +166,20 @@ const Entry = ({ entry, session }: EntryProps) => {
         <div className="flex flex-row items-center gap-2 text-sm ">
           <p className="text-xs cursor-pointer hover:underline ">{entryDate}</p>
           <Link
-            // onClick={() => {
-            //   router.push(`/author/${entry?.profiles.username}/`);
-            // }}
             href={`/author/${entry?.profiles.username}`}
-            className="cursor-pointer text-emerald-600 hover:underline"
+            className="text-sm cursor-pointer text-emerald-500 hover:underline"
           >
             {entry.profiles?.username}
           </Link>
+          {session && (
+            <div className="flex items-center ">
+              {session?.user.id === entry.user_id ? (
+                <DropdownMenuAuthor entry={entry} />
+              ) : (
+                <DropdownMenuEntry />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </>
