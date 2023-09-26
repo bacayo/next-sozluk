@@ -78,7 +78,7 @@ const SearchInput = ({ placeholder }: SearchInputProps) => {
           {query?.map((item) => (
             <li
               onClick={() => {
-                router.push(`/topic/${item.id}`);
+                router.push(`/topic/${item.title}`);
                 setQuery([]);
                 if (
                   inputRef.current?.value !== "" ||
