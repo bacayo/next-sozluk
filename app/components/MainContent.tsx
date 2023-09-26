@@ -16,7 +16,7 @@ const MainContent = ({ randomEntries, session }: MainContentProps) => {
   const router = useRouter();
 
   return (
-    <div className="flex-grow mx-auto mt-4 lg:ml-64 ">
+    <div className="flex-grow mx-auto pt-28 lg:ml-64 lg:pl-10 ">
       <TopicBox>
         {randomEntries?.map((entry) => (
           <div key={entry.id}>
