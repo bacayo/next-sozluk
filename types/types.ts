@@ -22,6 +22,58 @@ export type EntryT =
     }[]
   | null;
 
+export type Entry = {
+  created_at: string;
+  id: string;
+  text: string;
+  topic_id: string;
+  updated_at: string | null;
+  user_id: string;
+  vote: number;
+  topics: {
+    created_at: string;
+    id: string;
+    title: string;
+    updated_at: string | null;
+    user_id: string;
+  } | null;
+  favorites: {
+    created_at: string;
+    entryId: string | null;
+    id: string | null;
+    userId: string | null;
+  }[];
+};
+
+export type Author = {
+  avatar_url: string | null;
+  id: string;
+  updated_at: string | null;
+  username: string | null;
+  entry: {
+    created_at: string;
+    id: string;
+    text: string;
+    topic_id: string;
+    updated_at: string | null;
+    user_id: string;
+    vote: number;
+    topics: {
+      created_at: string;
+      id: string;
+      title: string;
+      updated_at: string | null;
+      user_id: string;
+    } | null;
+    favorites: {
+      created_at: string;
+      entryId: string | null;
+      id: string | null;
+      userId: string | null;
+    }[];
+  }[];
+} | null;
+
 export type RandomEntries =
   | {
       created_at: string | null;
