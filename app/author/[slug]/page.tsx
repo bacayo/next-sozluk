@@ -32,7 +32,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
   }
 
   return (
-    <div className=" lg:ml-64">
+    <div className="lg:ml-64 lg:pl-10 pt-28 ">
       {/* Head */}
       <div>
         {/* Commands */}
