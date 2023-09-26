@@ -22,6 +22,7 @@ const RightContent = ({ session, profile }: RightContentProps) => {
   const handleSignout = async () => {
     try {
       await supabase.auth.signOut();
+      router.push("/");
       router.refresh();
     } catch (error) {
       console.log(error);
@@ -30,7 +31,7 @@ const RightContent = ({ session, profile }: RightContentProps) => {
 
   return (
     <>
-      <div className="hidden gap-1 lg:flex text-neutral-300 ">
+      <div className="hidden gap-3 lg:flex text-neutral-300 ">
         {!session ? (
           <>
             <div
