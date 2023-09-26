@@ -3,11 +3,13 @@ import LoginForm from "./LoginForm";
 
 const LoginPage = async () => {
   return (
-    <Container>
-      <p className="py-2 font-bold">Login</p>
-      <LoginForm />
-      {/* </div> */}
-    </Container>
+    <div className="pt-28">
+      <Container>
+        <p className="py-2 font-bold">Login</p>
+        <LoginForm />
+        {/* </div> */}
+      </Container>
+    </div>
   );
 };
 
