@@ -17,8 +17,13 @@ const TopicPage = async ({ params }: { params: { slug: string } }) => {
     data: { session },
   } = await supabase.auth.getSession();
 
+  // const { data: topicId } = await supabase
+  //   .from("topics")
+  //   .select()
+  //   .eq("title", decodeURIComponent(params.slug).replaceAll("-", " "));
+
   return (
-    <div className="flex flex-col flex-grow gap-4 mt-4 lg:ml-64 ">
+    <div className="flex flex-col flex-grow gap-4 pt-28 lg:ml-64 lg:pl-10 ">
       <div>
         {entries?.map((entry) => (
           <div key={entry.id}>
@@ -29,7 +34,7 @@ const TopicPage = async ({ params }: { params: { slug: string } }) => {
           </div>
         ))}
       </div>
-      {session && <EntryForm params={params} />}
+      {session && <EntryForm params={params} entry={entries} />}
     </div>
   );
 };
