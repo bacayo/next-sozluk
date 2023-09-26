@@ -19,7 +19,7 @@ const AddNewTopicPage = async ({ searchParams }: AddNewTopicPageProps) => {
 
   return (
     <Container>
-      <div className="flex flex-row flex-grow w-full ">
+      <div className="flex flex-row flex-grow w-full pt-28 ">
         {/* <Sidebar topics={topics} /> */}
         <div className="flex flex-col flex-grow gap-2 ml-2 ">
           <h1 className="text-2xl font-bold text-green-600 hover:underline hover:cursor-pointer">
