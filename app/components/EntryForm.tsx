@@ -6,7 +6,37 @@ import { useSupabase } from "../providers/SupabaseProvider";
 import { Button } from "./ui/Button";
 import { Textarea } from "./ui/Textarea";
 import { useToast } from "./ui/use-toast";
-import { Entry } from "@/types/types";
+
+type NewEntries =
+  | {
+      created_at: string;
+      id: string;
+      text: string;
+      topic_id: string;
+      updated_at: string | null;
+      user_id: string;
+      vote: number;
+      topics: {
+        created_at: string;
+        id: string;
+        title: string;
+        updated_at: string | null;
+        user_id: string;
+      } | null;
+      favorites: {
+        created_at: string;
+        entryId: string | null;
+        id: string | null;
+        userId: string | null;
+      }[];
+      profiles: {
+        avatar_url: string | null;
+        id: string;
+        updated_at: string | null;
+        username: string | null;
+      } | null;
+    }[]
+  | null;
 
 type Entries =
   | {
@@ -43,10 +73,12 @@ interface EntryFormProps {
   params?: {
     slug: string;
   };
-  searchParams?: {
-    q: string;
-  };
-  entry?: Entries;
+  searchParams?:
+    | {
+        q: string;
+      }
+    | { [key: string]: string | string[] | undefined };
+  entry?: NewEntries;
 }
 
 const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
@@ -74,14 +106,10 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
             {
               text: inputRef.current?.value,
               user_id: session?.user.id as string,
-              // topic_id: topicId as string,
-              topic_id: entry![0].id,
+              topic_id: entry![0].topic_id,
             },
           ])
           .select();
-
-        console.log({ data, error, status, statusText });
-
         toast({
           title: "Entry success",
           variant: "success",
@@ -144,7 +172,16 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
         </div>
         <Textarea
           ref={inputRef}
-          placeholder={`Express your thoughts on ${searchParams?.q}`}
+          // placeholder={`Express your thoughts on ${searchParams?.q}`}
+          placeholder={
+            searchParams?.q
+              ? `Express your thoughts on ${decodeURIComponent(
+                  searchParams?.q as string
+                )}`
+              : `Express your thoughts on ${decodeURIComponent(
+                  params?.slug as string
+                )}`
+          }
           className="h-20 text-gray-200 transition-[height] duration-500 ease-in border-2 focus:h-80 border-neutral-600 focus:border-emerald-600 focus-visible:ring-0 placeholder:text-gray-400"
         />
       </div>

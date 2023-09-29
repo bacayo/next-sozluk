@@ -1,0 +1,215 @@
+"use client";
+
+import { Button } from "@/app/components/ui/Button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/components/ui/Select";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useMemo } from "react";
+import SearchInTopicMenu from "./SearchInTopicMenu";
+
+type Entries =
+  | {
+      created_at: string;
+      id: string;
+      title: string;
+      updated_at: string | null;
+      user_id: string;
+      entry: {
+        created_at: string;
+        id: string;
+        text: string;
+        topic_id: string;
+        updated_at: string | null;
+        user_id: string;
+        vote: number;
+        favorites: {
+          created_at: string;
+          entryId: string | null;
+          id: string | null;
+          userId: string | null;
+        }[];
+        profiles: {
+          avatar_url: string | null;
+          id: string;
+          updated_at: string | null;
+          username: string | null;
+        } | null;
+      }[];
+    }[]
+  | null;
+
+type NewEntries =
+  | {
+      created_at: string;
+      id: string;
+      text: string;
+      topic_id: string;
+      updated_at: string | null;
+      user_id: string;
+      vote: number;
+      topics: {
+        created_at: string;
+        id: string;
+        title: string;
+        updated_at: string | null;
+        user_id: string;
+      } | null;
+      favorites: {
+        created_at: string;
+        entryId: string | null;
+        id: string | null;
+        userId: string | null;
+      }[];
+      profiles: {
+        avatar_url: string | null;
+        id: string;
+        updated_at: string | null;
+        username: string | null;
+      } | null;
+    }[]
+  | null;
+
+const filters = ["all", "today"];
+
+interface TopicNavbarProps {
+  searchParams: { [key: string]: string | string[] | undefined };
+  allEntries: NewEntries;
+}
+
+const TopicNavbar = ({ searchParams, allEntries }: TopicNavbarProps) => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const page =
+    typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
+
+  const entryLength = useMemo(() => {
+    const length = allEntries?.length;
+    return Math.ceil((length as number) / 10);
+  }, [allEntries]);
+
+  const selectedFilter = searchParams.a;
+
+  return (
+    <div className="pl-2 ">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4 pb-3 text-sm ">
+          {/* Sort */}
+          <div className="flex items-center gap-1 ">
+            <div>nice:</div>
+            {filters.map((item, index) => (
+              <Link
+                // href={`?a=${item}&page=${searchParams.page}`}
+                href={pathname + `?a=${item === "all" ? "nice" : "nicetoday"}`}
+                key={index}
+                className="text-gray-400 hover:cursor-pointer hover:text-emerald-500"
+              >
+                {item}
+              </Link>
+            ))}
+          </div>
+          {/* Search */}
+          <div>
+            <SearchInTopicMenu />
+          </div>
+          <div>
+            <div className="text-gray-400 hover:cursor-pointer hover:text-emerald-500">
+              follow
+            </div>
+          </div>
+        </div>
+        {entryLength > 1 && (
+          <div className="flex flex-row items-center gap-2">
+            {searchParams.page !== "1" && searchParams.page && (
+              <Link
+                href={{
+                  pathname,
+                  query: {
+                    ...(selectedFilter && { a: selectedFilter }),
+                    page: page > 1 ? page - 1 : 1,
+                  },
+                }}
+              >
+                <Button
+                  size="sm"
+                  className="text-gray-400 bg-transparent hover:bg-neutral-800 border-neutral-800"
+                  variant="outline"
+                >
+                  «
+                </Button>
+              </Link>
+            )}
+            {/* Left handside */}
+            <div>
+              <Select
+                onValueChange={(e) => {
+                  const params = new URLSearchParams();
+                  params.append("page", (Number(e) + 1).toString());
+                  router.push(pathname + "?" + params.toString());
+                }}
+              >
+                {/* <SelectTrigger className="w-[180px]"> */}
+                <SelectTrigger className="w-16 h-8 border-none ring-0 focus:ring-0 bg-neutral-800">
+                  <SelectValue
+                    placeholder={searchParams.page ? searchParams.page : 1}
+                  />
+                </SelectTrigger>
+                <SelectContent className="w-16 bg-neutral-800 ">
+                  {Array.from({ length: entryLength }, (x, k) => (
+                    <SelectGroup key={k} className="w-16">
+                      <SelectItem
+                        className="focus:bg-neutral-700"
+                        value={k.toString()}
+                      >
+                        {k + 1}
+                      </SelectItem>
+                    </SelectGroup>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Right handside */}
+            <div className="text-sm">/</div>
+            <div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-gray-400 bg-transparent hover:bg-neutral-800 border-neutral-800"
+              >
+                {entryLength}
+              </Button>
+            </div>
+            {searchParams.page !== entryLength.toString() && (
+              <Link
+                href={{
+                  pathname,
+                  query: {
+                    // page: page + 1,
+                    ...(selectedFilter && { a: selectedFilter }),
+                    page: page + 1,
+                  },
+                }}
+              >
+                <Button
+                  size="sm"
+                  className="text-gray-400 bg-transparent hover:bg-neutral-800 border-neutral-800"
+                  variant="outline"
+                >
+                  »{" "}
+                </Button>
+              </Link>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default TopicNavbar;

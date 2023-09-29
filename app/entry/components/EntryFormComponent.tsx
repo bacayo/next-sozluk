@@ -66,7 +66,7 @@ const EntryFormComponent = ({ entry }: EntryFormComponentProps) => {
         <Textarea
           onChange={(e) => setText(e.target.value)}
           value={text}
-          className="h-20 text-gray-200 transition-[height] duration-500 ease-in border-2 focus:h-80 border-neutral-600 focus:border-emerald-600 focus-visible:ring-0 placeholder:text-gray-400"
+          className="h-40 text-gray-200 transition-[height] duration-500 ease-in border-2 focus:h-80 border-neutral-600 focus:border-emerald-600 focus-visible:ring-0 placeholder:text-gray-400"
         />
       </div>
       <Button
