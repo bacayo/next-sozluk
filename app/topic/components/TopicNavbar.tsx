@@ -14,38 +14,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import SearchInTopicMenu from "./SearchInTopicMenu";
 
-type Entries =
-  | {
-      created_at: string;
-      id: string;
-      title: string;
-      updated_at: string | null;
-      user_id: string;
-      entry: {
-        created_at: string;
-        id: string;
-        text: string;
-        topic_id: string;
-        updated_at: string | null;
-        user_id: string;
-        vote: number;
-        favorites: {
-          created_at: string;
-          entryId: string | null;
-          id: string | null;
-          userId: string | null;
-        }[];
-        profiles: {
-          avatar_url: string | null;
-          id: string;
-          updated_at: string | null;
-          username: string | null;
-        } | null;
-      }[];
-    }[]
-  | null;
-
-type NewEntries =
+export type NewEntries =
   | {
       created_at: string;
       id: string;
@@ -78,12 +47,23 @@ type NewEntries =
 
 const filters = ["all", "today"];
 
+export type Topics = {
+  title: string;
+} | null;
+
 interface TopicNavbarProps {
   searchParams: { [key: string]: string | string[] | undefined };
   allEntries: NewEntries;
+  entries: NewEntries;
+  topics: Topics;
 }
 
-const TopicNavbar = ({ searchParams, allEntries }: TopicNavbarProps) => {
+const TopicNavbar = ({
+  searchParams,
+  allEntries,
+  entries,
+  topics,
+}: TopicNavbarProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const page =
@@ -105,10 +85,16 @@ const TopicNavbar = ({ searchParams, allEntries }: TopicNavbarProps) => {
             <div>nice:</div>
             {filters.map((item, index) => (
               <Link
-                // href={`?a=${item}&page=${searchParams.page}`}
-                href={pathname + `?a=${item === "all" ? "nice" : "nicetoday"}`}
+                // href={pathname + `?a=${item === "all" ? "nice" : "nicetoday"}`}
+                href={pathname + `?a=${item}`}
                 key={index}
-                className="text-gray-400 hover:cursor-pointer hover:text-emerald-500"
+                className={`font-bold hover:cursor-pointer hover:text-emerald-500 ${
+                  // item === "all" && selectedFilter === "nice"
+                  selectedFilter === item
+                    ? " text-emerald-500"
+                    : "text-gray-400"
+                }
+                `}
               >
                 {item}
               </Link>
@@ -119,12 +105,12 @@ const TopicNavbar = ({ searchParams, allEntries }: TopicNavbarProps) => {
             <SearchInTopicMenu />
           </div>
           <div>
-            <div className="text-gray-400 hover:cursor-pointer hover:text-emerald-500">
+            <div className="font-bold text-gray-400 hover:cursor-pointer hover:text-emerald-500">
               follow
             </div>
           </div>
         </div>
-        {entryLength > 1 && (
+        {entryLength > 1 && entries?.length !== 0 && (
           <div className="flex flex-row items-center gap-2">
             {searchParams.page !== "1" && searchParams.page && (
               <Link

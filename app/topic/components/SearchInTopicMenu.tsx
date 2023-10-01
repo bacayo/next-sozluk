@@ -24,7 +24,7 @@ const SearchInTopicMenu = () => {
         <Button
           variant="outline"
           size="icon"
-          className="text-gray-400 bg-transparent border-none w-fit h-fit hover:bg-transparent hover:text-emerald-500"
+          className="font-bold text-gray-400 bg-transparent border-none w-fit h-fit hover:bg-transparent hover:text-emerald-500"
         >
           search in topic <ChevronDown size={18} />
         </Button>

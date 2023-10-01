@@ -12,18 +12,6 @@ import { useMemo } from "react";
 import { FaChevronDown, FaChevronUp, FaTwitter } from "react-icons/fa";
 import { FiStar } from "react-icons/fi";
 import { TfiFacebook } from "react-icons/tfi";
-import { BsThreeDots } from "react-icons/bs";
-import { BiBlock } from "react-icons/bi";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "../ui/DropdownMenu";
-import { CreditCard, Flag, Keyboard, Settings, Mail } from "lucide-react";
-import { Button } from "../ui/Button";
 import {
   DropdownMenuAuthor,
   DropdownMenuEntry,
