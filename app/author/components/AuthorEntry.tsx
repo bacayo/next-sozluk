@@ -149,9 +149,11 @@ const AuthorEntry = ({ author, entry, session }: AuthorEntryProps) => {
                   setFavorites > 0 && "fill-emerald-400 text-emerald-400"
                 } `}
               />
-              <p className="text-sm cursor-pointer text-emerald-400">
-                {entry.favorites.length}
-              </p>
+              {entry.favorites.length > 0 && (
+                <p className="text-sm cursor-pointer text-emerald-400">
+                  {entry.favorites.length}
+                </p>
+              )}
             </>
           )}
         </div>
