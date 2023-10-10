@@ -5,6 +5,7 @@ import { format, sub } from "date-fns";
 import { cookies } from "next/headers";
 import TopicClient from "../components/TopicClient";
 import TopicNavbar from "../components/TopicNavbar";
+import NoEntry from "../components/NoEntry";
 
 const FROM = 0;
 const TO = 9;
@@ -55,16 +56,13 @@ const TopicPage = async ({ params, searchParams }: Props) => {
     Number(searchParams.page) > Math.ceil((allEntries?.length as number) / 10)
   ) {
     return (
-      <div className="flex flex-col flex-grow gap-4 pt-28 lg:ml-64 lg:pl-10">
-        <Topic topic={slug} />
-        <TopicNavbar
-          topics={topics}
-          allEntries={allEntries}
-          searchParams={searchParams}
-          entries={entries}
-        />
-        <p>no suitable entries were found with the criteria you specified.</p>
-      </div>
+      <NoEntry
+        allEntries={allEntries}
+        entries={entries}
+        params={params}
+        searchParams={searchParams}
+        topics={topics}
+      />
     );
   }
 
