@@ -8,7 +8,7 @@ import {
 import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaTwitter } from "react-icons/fa";
 import { FiStar } from "react-icons/fi";
 import { TfiFacebook } from "react-icons/tfi";
@@ -16,15 +16,50 @@ import {
   DropdownMenuAuthor,
   DropdownMenuEntry,
 } from "../DropdownMenuComponent";
-
+import { Button } from "../ui/Button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/DropdownMenu";
+import { Loader2 } from "lucide-react";
 interface EntryProps {
   entry: any;
   session?: Session | null;
 }
 
+type Result =
+  | {
+      created_at: string;
+      entryId: string | null;
+      id: string;
+      userId: string | null;
+      profiles: {
+        username: string | null;
+        id: string;
+      } | null;
+    }[]
+  | null;
+
+async function getFavorites(entryId: string) {
+  const supabase = createClientComponentClient<Database>();
+
+  const { data: favoritesList } = await supabase
+    .from("favorites")
+    .select("*,profiles(username,id)")
+    .eq("entryId", entryId);
+  // The return value is *not* serialized
+  // You can return Date, Map, Set, etc.
+  return favoritesList;
+}
+
 const Entry = ({ entry, session }: EntryProps) => {
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
+  const [userFavorites, setUserFavorites] = useState<Result>();
+  const [loading, setLoading] = useState(false);
 
   const handleVote = async (entryId: string) => {
     await supabase.rpc("increment_entry_vote", { row_id: entryId });
@@ -95,6 +130,18 @@ const Entry = ({ entry, session }: EntryProps) => {
     return formatted;
   }, [entry]);
 
+  const onLoadUserFavorites = async (entryId: string) => {
+    setLoading(true);
+    try {
+      const results = await getFavorites(entryId);
+      setUserFavorites(results);
+      setLoading(false);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <div
@@ -145,10 +192,70 @@ const Entry = ({ entry, session }: EntryProps) => {
                 } `}
               />
               {entry.favorites.length > 0 && (
-                <p className="text-sm cursor-pointer text-emerald-400">
-                  {/* {entry.profiles.favorites.length} */}
-                  {entry.favorites.length}
-                </p>
+                // <p
+                //   onClick={async () => {
+                //     const results = await getFavorites(entry.id);
+                //     setUserFavorites(results);
+                //     console.log(results);
+                //   }}
+                //   className="text-sm cursor-pointer text-emerald-400"
+                // >
+                //   {entry.favorites.length}
+                // </p>
+
+                <DropdownMenu
+                  onOpenChange={() => {
+                    onLoadUserFavorites(entry.id);
+                  }}
+                >
+                  <DropdownMenuTrigger
+                    onClick={() => {
+                      console.log("hello");
+                    }}
+                    asChild
+                  >
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="bg-transparent border-none w-fit h-fit text-emerald-500 hover:text-emerald-500 hover:bg-transparent"
+                    >
+                      <span>{entry.favorites.length}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  {loading ? (
+                    <DropdownMenuContent className="w-56 shadow shadow-neutral-700 border-neutral-800 bg-neutral-800 ">
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="bg-transparent border-none w-fit h-fit text-emerald-500 hover:text-emerald-500 hover:bg-transparent"
+                          >
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin " />
+                          </Button>
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  ) : (
+                    <DropdownMenuContent className="flex flex-col w-56 gap-1 overflow-y-auto shadow shadow-neutral-700 border-neutral-800 bg-neutral-800 max-h-80 ">
+                      {userFavorites?.map((item) => (
+                        <section
+                          key={item.id}
+                          className="text-sm text-emerald-500"
+                        >
+                          <Link
+                            href={`/author/${item.profiles?.username}`}
+                            className="px-2 hover:cursor-pointer hover:underline"
+                          >
+                            @{item.profiles?.username}
+                          </Link>
+                        </section>
+                      ))}
+                    </DropdownMenuContent>
+                  )}
+                </DropdownMenu>
               )}
             </>
           )}
