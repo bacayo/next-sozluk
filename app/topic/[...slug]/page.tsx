@@ -39,6 +39,7 @@ const TopicPage = async ({ params, searchParams }: Props) => {
     .from("entry")
     .select("*,topics!inner(*),favorites(*),profiles(*)")
     .eq("topics.title", decodeURIComponent(params.slug).replaceAll("-", " "))
+    .order("created_at", { ascending: true })
     .range(
       searchParams.page && Number(searchParams.page) !== 1
         ? Number(searchParams.page) * 10 - 10
