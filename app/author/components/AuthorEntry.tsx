@@ -1,43 +1,122 @@
 "use client";
 
-import { Button } from "@/app/components/ui/Button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/app/components/ui/DropdownMenu";
+import { useAppSelector } from "@/app/hooks/reduxHooks";
 import { Database } from "@/lib/supabase";
-import { Author, Entry } from "@/types/types";
+import { Author } from "@/types/types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Session } from "@supabase/supabase-js";
 import { format } from "date-fns";
-import { Edit, Flag, Pin, Trash } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
-import { BsThreeDots } from "react-icons/bs";
-import { FaChevronDown, FaChevronUp, FaTwitter } from "react-icons/fa";
-import { FiStar } from "react-icons/fi";
-import { TfiFacebook } from "react-icons/tfi";
+import { useCallback, useState } from "react";
+import AuthorEntryComponent from "./AuthorEntryComponent";
+import Favorites from "./Favorites";
+
+export type Result =
+  | {
+      created_at: string;
+      entryId: string | null;
+      id: string;
+      userId: string | null;
+      profiles: {
+        username: string | null;
+        id: string;
+      } | null;
+    }[]
+  | null;
+
+export type FavEntries =
+  | {
+      created_at: string;
+      entryId: string | null;
+      id: string;
+      userId: string | null;
+      entry: {
+        created_at: string;
+        id: string;
+        text: string;
+        topic_id: string;
+        updated_at: string | null;
+        user_id: string;
+        vote: number;
+        favorites: {
+          created_at: string;
+          entryId: string | null;
+          id: string;
+          userId: string | null;
+        }[];
+        topics: {
+          created_at: string;
+          id: string;
+          title: string;
+          updated_at: string | null;
+          user_id: string;
+        } | null;
+        profiles: {
+          avatar_url: string | null;
+          id: string;
+          updated_at: string | null;
+          username: string | null;
+        } | null;
+      } | null;
+    }[]
+  | null;
+
+export type Item = {
+  created_at: string;
+  id: string;
+  text: string;
+  topic_id: string;
+  updated_at: string | null;
+  user_id: string;
+  vote: number;
+  topics: {
+    created_at: string;
+    id: string;
+    title: string;
+    updated_at: string | null;
+    user_id: string;
+  } | null;
+  favorites: {
+    created_at: string;
+    entryId: string | null;
+    id: string | null;
+    userId: string | null;
+  }[];
+};
 
 interface AuthorEntryProps {
   author: Author;
-  entry: Entry;
+  // entry: Entry;
   session: Session | null;
+  favEntries: FavEntries;
 }
 
-const AuthorEntry = ({ author, entry, session }: AuthorEntryProps) => {
+async function getFavorites(entryId: string) {
+  const supabase = createClientComponentClient<Database>();
+
+  const { data: favoritesList } = await supabase
+    .from("favorites")
+    .select("*,profiles(username,id)")
+    .eq("entryId", entryId);
+  // The return value is *not* serialized
+  // You can return Date, Map, Set, etc.
+  return favoritesList;
+}
+
+const AuthorEntry = ({ author, session, favEntries }: AuthorEntryProps) => {
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
+  const { category } = useAppSelector((state) => state.authorPageCategory);
 
-  const formattedText = useMemo(() => {
+  const [userFavorites, setUserFavorites] = useState<Result>();
+  const [loading, setLoading] = useState(false);
+
+  const formattedText = useCallback((formatText: string) => {
     const linkRegex = /\[([^\]]+) ([^\]]+)\]/g;
     const spoilerRegex = /--`spoiler`--/g;
     const placeholderRegex = /`:(.*?)`/;
 
-    const formatted = entry.text
+    const formatted = formatText
       .replace(linkRegex, (_: any, linkText: string, linkURL: string) => {
         return `<a target="blank" href="${linkText}" style="color: #10b981; cursor: pointer;">${linkURL}</a>`;
       })
@@ -54,165 +133,85 @@ const AuthorEntry = ({ author, entry, session }: AuthorEntryProps) => {
       });
 
     return formatted;
-  }, [entry]);
+  }, []);
 
   // Format supabase date to more readeble fashion
-  const formattedDate = useMemo(() => {
-    const entryDate = new Date(entry?.created_at);
+  const formattedDate = useCallback((date: string) => {
+    const entryDate = new Date(date);
     const result = format(entryDate, "MMM d, yyyy hh:mm aaaa");
     return result;
-  }, [entry]);
+  }, []);
 
-  const setFavorites = useMemo(() => {
-    const x = entry.favorites.filter(
-      (item) => item.userId === session?.user.id
+  const setFavorites = useCallback(
+    (fav: Item) => {
+      const x = fav.favorites.filter(
+        (item) => item.userId === session?.user.id
+      );
+      return x.length;
+    },
+    [session]
+  );
+
+  const setFavoritesFavs = useCallback(() => {
+    const x = favEntries?.map((item) =>
+      item.entry?.favorites.filter((item) => item.userId === session?.user.id)
     );
-    return x.length;
-  }, [entry, session]);
+    return x ? x.length : 0;
+  }, [session, favEntries]);
 
-  const addToFavorites = async () => {
-    await supabase.from("favorites").insert({
-      userId: session?.user.id,
-      entryId: entry.id,
-    });
+  const addToFavorites = async (entryId: string) => {
+    const { data, status, error, statusText } = await supabase
+      .from("favorites")
+      .insert({
+        userId: session?.user.id,
+        entryId: entryId,
+      })
+      .select();
+    console.log({ data, status, error, statusText });
+    if (status === 201) {
+      router.refresh();
+    }
   };
 
-  const removeFavorites = async () => {
-    await supabase
+  const removeFavorites = async (entryId: string) => {
+    const { status, data, error, statusText } = await supabase
       .from("favorites")
       .delete()
-      .eq("entryId", entry.id)
+      .eq("entryId", entryId)
+      // .eq("entryId", item.id)
       .eq("userId", session?.user.id);
+
+    console.log({ status, data, error, statusText });
+
+    if (status === 204) {
+      router.refresh();
+    }
   };
 
   const deleteEntry = async (id: string) => {
-    const { data, count, error, status, statusText } = await supabase
-      .from("entry")
-      .delete()
-      .eq("id", id);
+    const { status } = await supabase.from("entry").delete().eq("id", id);
 
-    console.log({ data, status, error, statusText });
-    router.refresh();
+    if (status === 204) {
+      router.refresh();
+    }
   };
 
-  return (
-    <div className="py-2 ">
-      <Link
-        className="text-xl font-bold cursor-pointer text-emerald-500 hover:underline"
-        href={`/topic/${entry.topics?.title}`}
-      >
-        {entry.topics?.title}
-      </Link>
-      {/* <p>{entry.text}</p> */}
-      <div
-        className="p-2 whitespace-pre-line"
-        dangerouslySetInnerHTML={{ __html: formattedText }}
-      />
-      {/* Socials */}
-      <div className="flex flex-row justify-between mt-2">
-        <div className="flex items-center gap-3">
-          <TfiFacebook
-            title="share to facebook"
-            size={14}
-            className="transition cursor-pointer hover:text-blue-600"
-          />
-          <FaTwitter
-            title="tweet this in twitter"
-            size={14}
-            className="transition cursor-pointer hover:text-sky-500"
-          />
-          <FaChevronUp
-            title="nice"
-            size={16}
-            className="transition cursor-pointer hover:text-green-500"
-          />
-          <FaChevronDown
-            title="awful"
-            size={16}
-            className="transition cursor-pointer hover:text-red-700"
-          />
-          {session && (
-            <>
-              {/* Add or remove favorites */}
-              <FiStar
-                title={
-                  setFavorites > 0
-                    ? "remove from favorites"
-                    : "add to favorites"
-                }
-                onClick={() => {
-                  setFavorites > 0 ? removeFavorites() : addToFavorites();
-                  router.refresh();
-                }}
-                size={16}
-                className={`transition-colors cursor-pointer hover:text-emerald-400 hover:fill-emerald-400 ${
-                  setFavorites > 0 && "fill-emerald-400 text-emerald-400"
-                } `}
-              />
-              {entry.favorites.length > 0 && (
-                <p className="text-sm cursor-pointer text-emerald-400">
-                  {entry.favorites.length}
-                </p>
-              )}
-            </>
-          )}
-        </div>
-        <div className="flex flex-row items-center gap-1 text-sm ">
-          <p className="text-xs cursor-pointer hover:underline">
-            {formattedDate}
-          </p>
-          <Link
-            href={`/author/${author?.username}`}
-            className="text-sm cursor-pointer text-emerald-500 hover:underline"
-          >
-            {author?.username}
-          </Link>
-          {session && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="bg-transparent border-none w-fit h-fit hover:bg-transparent"
-                >
-                  <BsThreeDots className="w-4 h-4 text-emerald-400" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="border-none w-fit bg-neutral-800">
-                <DropdownMenuGroup>
-                  <DropdownMenuItem className="cursor-pointer focus:bg-neutral-500">
-                    <Pin className="w-4 h-4 mr-2" />
-                    <span>pin to profile</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      deleteEntry(entry.id);
-                      // router.refresh();
-                      // console.log(entry.id);
-                    }}
-                    className="cursor-pointer focus:bg-neutral-500"
-                  >
-                    <Trash className="w-4 h-4 mr-2" />
-                    <span>delete</span>
-                  </DropdownMenuItem>
-                  <Link href={`/entry/update/${entry.id}`}>
-                    <DropdownMenuItem className="cursor-pointer focus:bg-neutral-500">
-                      <Edit className="w-4 h-4 mr-2" />
-                      <span>edit</span>
-                    </DropdownMenuItem>
-                  </Link>
-                  <DropdownMenuItem className="cursor-pointer focus:bg-neutral-500">
-                    <Flag className="w-4 h-4 mr-2" />
-                    <span>report</span>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </div>
-      </div>
-    </div>
+  const onLoadUserFavorites = async (entryId: string) => {
+    setLoading(true);
+    try {
+      const results = await getFavorites(entryId);
+      setUserFavorites(results);
+      setLoading(false);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return category === "favorites" ? (
+    <Favorites favEntries={favEntries} session={session} />
+  ) : (
+    <AuthorEntryComponent author={author} session={session} />
   );
 };
-
 export default AuthorEntry;
