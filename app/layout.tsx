@@ -5,7 +5,7 @@ import Navbar from "./components/Navbar/Navbar";
 import "./globals.css";
 import SupabaseProvider from "./providers/SupabaseProvider";
 import { ThemeProvider } from "./providers/ThemeProvider";
-// import ReduxProvider from "./providers/ReduxProvider";
+import ReduxProvider from "./providers/ReduxProvider";
 import { Database } from "@/lib/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -39,18 +39,18 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={source.className}>
-        {/* <ReduxProvider> */}
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <SupabaseProvider>
-            <Navbar session={session} profile={myProfile} />
-            <Container>
-              <Sidebar topics={topics} />
-              {children}
-            </Container>
-            <Toaster />
-          </SupabaseProvider>
-        </ThemeProvider>
-        {/* </ReduxProvider> */}
+        <ReduxProvider>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <SupabaseProvider>
+              <Navbar session={session} profile={myProfile} />
+              <Container>
+                <Sidebar topics={topics} />
+                {children}
+              </Container>
+              <Toaster />
+            </SupabaseProvider>
+          </ThemeProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
