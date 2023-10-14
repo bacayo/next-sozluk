@@ -27,6 +27,18 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
 
   const session = await getSession();
 
+  const { data: favProf } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("username", slug)
+    .single();
+
+  const { data: favEntries, error } = await supabase
+    .from("favorites")
+    .select("*,entry(*,favorites(*),topics(*),profiles(*))")
+    .eq("userId", favProf?.id)
+    .order("created_at", { ascending: true });
+
   if (!author) {
     notFound();
   }
@@ -38,17 +50,14 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
         {/* Commands */}
         <HeaderLink author={author} />
         {/* Entry List */}
-        <AuthorNavbar author={author} />
+        <AuthorNavbar author={author} favEntries={favEntries} />
       </div>
       <main className="pb-6 mt-2">
-        {author.entry.map((item) => (
-          <AuthorEntry
-            key={item.id}
-            entry={item}
-            session={session}
-            author={author}
-          />
-        ))}
+        <AuthorEntry
+          author={author}
+          session={session}
+          favEntries={favEntries}
+        />
       </main>
     </div>
   );
