@@ -45,6 +45,30 @@ export type Entry = {
   }[];
 };
 
+// export type FavoritedAuthorEntries =
+//   | {
+//       avatar_url: string | null;
+//       id: string;
+//       updated_at: string | null;
+//       username: string | null;
+//       favorites: {
+//         created_at: string;
+//         entryId: string | null;
+//         id: string;
+//         userId: string | null;
+//       }[];
+//       entry: {
+//         created_at: string;
+//         id: string;
+//         text: string;
+//         topic_id: string;
+//         updated_at: string | null;
+//         user_id: string;
+//         vote: number;
+//       }[];
+//     }[]
+//   | null;
+
 export type Author = {
   avatar_url: string | null;
   id: string;
@@ -106,5 +130,29 @@ export type Topics =
       title: string;
       updated_at: string | null;
       user_id: string;
+    }[]
+  | null;
+
+export type FavoritedAuthorEntries =
+  | {
+      avatar_url: string | null;
+      id: string;
+      updated_at: string | null;
+      username: string | null;
+      favorites: {
+        created_at: string;
+        entryId: string | null;
+        id: string;
+        userId: string | null;
+        entry: {
+          created_at: string;
+          id: string;
+          text: string;
+          topic_id: string;
+          updated_at: string | null;
+          user_id: string;
+          vote: number;
+        } | null;
+      }[];
     }[]
   | null;
