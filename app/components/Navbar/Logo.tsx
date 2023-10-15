@@ -10,6 +10,7 @@ const Logo = () => {
 
   return (
     <Link
+      className="shrink-0"
       onClick={() => {
         router.refresh();
       }}
