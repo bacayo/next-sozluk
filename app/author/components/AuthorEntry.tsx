@@ -81,7 +81,6 @@ export type Item = {
 
 interface AuthorEntryProps {
   author: Author;
-  // entry: Entry;
   session: Session | null;
   favEntries: FavEntries;
 }
