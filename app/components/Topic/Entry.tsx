@@ -25,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/DropdownMenu";
 import { Loader2 } from "lucide-react";
+import { useFormatDate } from "@/app/hooks/useFormatDate";
 interface EntryProps {
   entry: any;
   session?: Session | null;
@@ -60,6 +61,7 @@ const Entry = ({ entry, session }: EntryProps) => {
   const router = useRouter();
   const [userFavorites, setUserFavorites] = useState<Result>();
   const [loading, setLoading] = useState(false);
+  const formatCreatedAt = useFormatDate();
 
   const handleVote = async (entryId: string) => {
     await supabase.rpc("increment_entry_vote", { row_id: entryId });
@@ -261,7 +263,13 @@ const Entry = ({ entry, session }: EntryProps) => {
           )}
         </div>
         <div className="flex flex-row items-center gap-2 text-sm ">
-          <p className="text-xs cursor-pointer hover:underline ">{entryDate}</p>
+          {/* <p className="text-xs cursor-pointer hover:underline ">{entryDate}</p> */}
+          <p className="text-xs cursor-pointer hover:underline ">
+            {formatCreatedAt(entry.created_at)}
+          </p>
+          <p className="text-xs cursor-pointer hover:underline ">
+            {entry.updated_at && formatCreatedAt(entry.updated_at)}
+          </p>
           <Link
             href={`/author/${entry?.profiles.username}`}
             className="text-sm cursor-pointer text-emerald-500 hover:underline"

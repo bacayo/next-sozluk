@@ -18,7 +18,6 @@ export default function SupabaseProvider({
   children: React.ReactNode;
 }) {
   const [supabase] = useState(() => createPagesBrowserClient());
-  const router = useRouter();
 
   // useEffect(() => {
   //   const {

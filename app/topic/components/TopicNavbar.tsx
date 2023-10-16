@@ -53,9 +53,9 @@ export type Topics = {
 
 interface TopicNavbarProps {
   searchParams: { [key: string]: string | string[] | undefined };
-  allEntries: NewEntries;
-  entries: NewEntries;
-  topics: Topics;
+  allEntries?: NewEntries;
+  entries?: NewEntries;
+  topics?: Topics;
 }
 
 const TopicNavbar = ({

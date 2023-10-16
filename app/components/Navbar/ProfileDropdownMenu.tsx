@@ -44,8 +44,9 @@ const ProfileDropdownMenu = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
+          size="icon"
           variant="default"
-          className="text-gray-200 transition focus-visible:ring-0 bg-neutral-800 hover:bg-neutral-800 hover:text-emerald-600"
+          className="text-gray-200 transition bg-transparent focus-visible:ring-0 w-fit h-fit hover:bg-neutral-800 hover:text-emerald-600"
         >
           <UserPlus2 size={28} className="pr-1" /> me
         </Button>

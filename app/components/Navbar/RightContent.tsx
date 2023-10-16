@@ -52,11 +52,17 @@ const RightContent = ({ session, profile }: RightContentProps) => {
             </div>
           </>
         ) : (
-          <>
-            <Button className="text-gray-200 transition bg-neutral-800 hover:bg-neutral-800 hover:text-emerald-600">
+          <div className="flex items-center justify-center gap-2">
+            <Button
+              size="icon"
+              className="text-gray-200 transition bg-transparent w-fit h-fit hover:bg-neutral-800 hover:text-emerald-600"
+            >
               <Bookmark size={28} className="pr-1" /> activity
             </Button>
-            <Button className="text-gray-200 transition bg-neutral-800 hover:bg-neutral-800 hover:text-emerald-600 focus-visible:ring-0 focus-visible:ring-offset-0">
+            <Button
+              size="icon"
+              className="text-gray-200 transition w-fit h-fit bg-neutral-800 hover:bg-neutral-800 hover:text-emerald-600 focus-visible:ring-0 focus-visible:ring-offset-0"
+            >
               <Mail size={28} className="pr-1" /> messages
             </Button>
             <ProfileDropdownMenu
@@ -64,7 +70,7 @@ const RightContent = ({ session, profile }: RightContentProps) => {
               session={session}
               profile={profile}
             />
-          </>
+          </div>
         )}
       </div>
       <Menu session={session} />

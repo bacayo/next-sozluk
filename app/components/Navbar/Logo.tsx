@@ -1,6 +1,7 @@
 "use client";
 
-import AppLogo from "@/public/images/eksisozluk_logo.svg";
+// import AppLogo from "@/public/images/eksisozluk_logo.svg";
+import AppLogo from "@/public/images/nextjs_logo.svg";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,8 +19,8 @@ const Logo = () => {
     >
       <Image
         className="cursor-pointer "
-        height={150}
-        width={150}
+        height={80}
+        width={80}
         alt="logo"
         src={AppLogo}
       />
