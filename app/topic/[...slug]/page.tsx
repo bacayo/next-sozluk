@@ -18,7 +18,10 @@ interface Props {
 }
 
 const TopicPage = async ({ params, searchParams }: Props) => {
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient<Database>({
+    cookies: () => cookieStore,
+  });
   const { slug } = params;
 
   //  Calculate 24 hours before the current time

@@ -4,27 +4,14 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import EntryFormComponent from "../components/EntryFormComponent";
 import EntryNotFound from "../components/EntryNotFound";
-import Topic from "@/app/components/Topic/Topic";
-import TopicNavbar from "@/app/topic/components/TopicNavbar";
-import { Button } from "@/app/components/ui/Button";
-import Entry from "@/app/components/Topic/Entry";
 import SingleEntry from "../components/SingleEntry";
-
-async function getFavorites(entryId: string) {
-  const supabase = createServerComponentClient<Database>({ cookies });
-
-  const { data: favoritesList } = await supabase
-    .from("favorites")
-    .select("*,profiles(username,id)")
-    .eq("entryId", entryId);
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
-  return favoritesList;
-}
 
 export default async function Page({ params }: { params: { slug: string[] } }) {
   const { slug } = params;
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient<Database>({
+    cookies: () => cookieStore,
+  });
 
   console.log(slug.length);
 

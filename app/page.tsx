@@ -5,7 +5,10 @@ import { cookies } from "next/headers";
 import MainContent from "./components/MainContent";
 
 export default async function Home() {
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient<Database>({
+    cookies: () => cookieStore,
+  });
 
   const { data: randomEntries } = await supabase
     .from("random_entries")

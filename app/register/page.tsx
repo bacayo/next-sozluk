@@ -8,7 +8,10 @@ import RegisterForm from "./RegisterForm";
 import { Database } from "@/lib/supabase";
 
 const RegisterPage = async () => {
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient<Database>({
+    cookies: () => cookieStore,
+  });
 
   const {
     data: { session },

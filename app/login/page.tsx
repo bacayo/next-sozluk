@@ -6,7 +6,10 @@ import { Database } from "@/lib/supabase";
 import LoginForm from "./LoginForm";
 
 const LoginPage = async () => {
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient<Database>({
+    cookies: () => cookieStore,
+  });
 
   const {
     data: { session },

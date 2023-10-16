@@ -17,7 +17,10 @@ interface AuthorPageProps {
 export default async function AuthorPage({ params }: AuthorPageProps) {
   const { slug } = params;
 
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient<Database>({
+    cookies: () => cookieStore,
+  });
 
   const { data: author } = await supabase
     .from("profiles")

@@ -11,7 +11,10 @@ interface AddNewTopicPageProps {
 }
 
 const AddNewTopicPage = async ({ searchParams }: AddNewTopicPageProps) => {
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient<Database>({
+    cookies: () => cookieStore,
+  });
 
   const {
     data: { session },
