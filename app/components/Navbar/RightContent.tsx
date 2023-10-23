@@ -73,7 +73,7 @@ const RightContent = ({ session, profile }: RightContentProps) => {
           </div>
         )}
       </div>
-      <Menu session={session} />
+      <Menu session={session} profile={profile} handleSignOut={handleSignout} />
     </>
   );
 };

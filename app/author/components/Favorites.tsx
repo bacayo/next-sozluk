@@ -48,7 +48,7 @@ const Favorites = ({ favEntries, session }: FavoriteProps) => {
   return (
     <>
       {favEntries?.map((item) => (
-        <React.Fragment key={item.id}>
+        <section className="mb-4" key={item.id}>
           <div className="pt-4">
             <Link
               className="text-xl font-bold cursor-pointer text-emerald-500 hover:underline"
@@ -133,7 +133,7 @@ const Favorites = ({ favEntries, session }: FavoriteProps) => {
               )}
             </div>
           </div>
-        </React.Fragment>
+        </section>
       ))}
     </>
   );

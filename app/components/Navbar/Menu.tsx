@@ -22,12 +22,15 @@ import { Button } from "../ui/Button";
 import { Session } from "@supabase/supabase-js";
 import { RiRegisteredFill } from "react-icons/ri";
 import Link from "next/link";
+import { Profile } from "./ProfileDropdownMenu";
 
 interface MenuPros {
   session: Session | null;
+  profile: Profile;
+  handleSignOut: () => void;
 }
 
-const Menu = ({ session }: MenuPros) => {
+const Menu = ({ session, profile, handleSignOut }: MenuPros) => {
   return session ? (
     <DropdownMenu>
       <DropdownMenuTrigger className="lg:hidden" asChild>
@@ -40,10 +43,12 @@ const Menu = ({ session }: MenuPros) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 shadow shadow-neutral-700 border-neutral-800 bg-neutral-800 ">
         <DropdownMenuGroup>
-          <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
-            <UserCircle2 className="w-4 h-4 mr-2" />
-            <span>my profile</span>
-          </DropdownMenuItem>
+          <Link href={`/author/${profile?.username}`}>
+            <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
+              <UserCircle2 className="w-4 h-4 mr-2" />
+              <span>my profile</span>
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
             <Settings className="w-4 h-4 mr-2" />
             <span>settings</span>
@@ -66,7 +71,10 @@ const Menu = ({ session }: MenuPros) => {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-neutral-500" />
-        <DropdownMenuItem className="focus:cursor-pointer focus:bg-neutral-500">
+        <DropdownMenuItem
+          onClick={handleSignOut}
+          className="focus:cursor-pointer focus:bg-neutral-500"
+        >
           <LogOut className="w-4 h-4 mr-2" />
           <span>Log out</span>
         </DropdownMenuItem>

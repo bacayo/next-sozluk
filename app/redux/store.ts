@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import authorPageCategoryReducer from "../redux/slices/authorPageCategorySlice";
+import setNavbarCategoryReducer from "../redux/slices/setNavbarCategory";
 
 export const store = configureStore({
   reducer: {
     authorPageCategory: authorPageCategoryReducer,
+    setNavbarCategory: setNavbarCategoryReducer,
   },
 });
 

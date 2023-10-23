@@ -79,8 +79,8 @@ const AuthorEntryComponent = ({
   return (
     <>
       {author?.entry.map((item) => (
-        <React.Fragment key={item.id}>
-          <div className="pt-4">
+        <section className="mb-4" key={item.id}>
+          <div className="pt-4 ">
             <Link
               className="text-xl font-bold cursor-pointer text-emerald-500 hover:underline"
               href={`/topic/${item.topics?.title}`}
@@ -95,7 +95,7 @@ const AuthorEntryComponent = ({
           />
 
           {/* Socials */}
-          <div className="flex flex-row justify-between mt-2">
+          <div className="flex flex-col justify-between gap-2 mt-2 md:flex-row">
             <div className="flex items-center gap-3">
               <TfiFacebook
                 title="share to facebook"
@@ -148,7 +148,7 @@ const AuthorEntryComponent = ({
                 </>
               )}
             </div>
-            <div className="flex flex-row items-center gap-1 text-sm ">
+            <div className="flex flex-row items-center justify-end gap-1 text-sm md:items-center ">
               <p className="text-xs cursor-pointer hover:underline">
                 {formattedDate(item.created_at)}
               </p>
@@ -201,7 +201,7 @@ const AuthorEntryComponent = ({
               )}
             </div>
           </div>
-        </React.Fragment>
+        </section>
       ))}
     </>
   );

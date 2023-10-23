@@ -78,8 +78,8 @@ const TopicNavbar = ({
 
   return (
     <div className="pl-2 ">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4 pb-3 text-sm ">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div className="flex justify-between gap-4 pb-3 text-sm md:items-center">
           {/* Sort */}
           <div className="flex items-center gap-1 ">
             <div>nice:</div>
@@ -88,7 +88,7 @@ const TopicNavbar = ({
                 // href={pathname + `?a=${item === "all" ? "nice" : "nicetoday"}`}
                 href={pathname + `?a=${item}`}
                 key={index}
-                className={`font-bold hover:cursor-pointer hover:text-emerald-500 ${
+                className={`font-bold md:hover:cursor-pointer  hover:cursor-pointer hover:text-emerald-500 ${
                   // item === "all" && selectedFilter === "nice"
                   selectedFilter === item
                     ? " text-emerald-500"
@@ -111,7 +111,7 @@ const TopicNavbar = ({
           </div>
         </div>
         {entryLength > 1 && entries?.length !== 0 && (
-          <div className="flex flex-row items-center gap-2">
+          <div className="flex flex-row items-center justify-end gap-2 md:justify-center ">
             {searchParams.page !== "1" && searchParams.page && (
               <Link
                 href={{
@@ -141,7 +141,7 @@ const TopicNavbar = ({
                 }}
               >
                 {/* <SelectTrigger className="w-[180px]"> */}
-                <SelectTrigger className="w-16 h-8 border-none ring-0 focus:ring-0 bg-neutral-800">
+                <SelectTrigger className="border-none w-fit h-fit md:w-16 md:h-8 ring-0 focus:ring-0 bg-neutral-800">
                   <SelectValue
                     placeholder={searchParams.page ? searchParams.page : 1}
                   />

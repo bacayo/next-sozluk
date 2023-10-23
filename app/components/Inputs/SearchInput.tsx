@@ -50,7 +50,7 @@ const SearchInput = ({ placeholder }: SearchInputProps) => {
       <Input
         onChange={searchQuery}
         ref={inputRef}
-        className="transition bg-gray-200 border-2 border-green-800 outline-none text-slate-900 focus-visible:ring-0 focus:border-green-400 placeholder:text-slate-900"
+        className="transition bg-gray-200 border-2 border-green-800 outline-none placeholder:text-xs md:placeholder:text-base text-slate-900 focus-visible:ring-0 focus:border-green-400 placeholder:text-slate-900"
         placeholder={placeholder}
       />
       <Link

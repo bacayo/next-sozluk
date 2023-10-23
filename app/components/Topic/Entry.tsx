@@ -145,13 +145,13 @@ const Entry = ({ entry, session }: EntryProps) => {
   };
 
   return (
-    <>
+    <section className="mb-8 ">
       <div
-        className="p-2 whitespace-pre-line"
+        className="p-2 whitespace-pre-line "
         dangerouslySetInnerHTML={{ __html: formattedText }}
       />
 
-      <div className="flex flex-row justify-between px-2 pt-2 ">
+      <div className="flex flex-col justify-between gap-2 px-2 pt-2 md:flex-row">
         <div className="flex items-center gap-3 ">
           <TfiFacebook
             title="share to facebook"
@@ -194,17 +194,6 @@ const Entry = ({ entry, session }: EntryProps) => {
                 } `}
               />
               {entry.favorites.length > 0 && (
-                // <p
-                //   onClick={async () => {
-                //     const results = await getFavorites(entry.id);
-                //     setUserFavorites(results);
-                //     console.log(results);
-                //   }}
-                //   className="text-sm cursor-pointer text-emerald-400"
-                // >
-                //   {entry.favorites.length}
-                // </p>
-
                 <DropdownMenu
                   onOpenChange={() => {
                     onLoadUserFavorites(entry.id);
@@ -262,32 +251,36 @@ const Entry = ({ entry, session }: EntryProps) => {
             </>
           )}
         </div>
-        <div className="flex flex-row items-center gap-2 text-sm ">
-          {/* <p className="text-xs cursor-pointer hover:underline ">{entryDate}</p> */}
-          <p className="text-xs cursor-pointer hover:underline ">
-            {formatCreatedAt(entry.created_at)}
-          </p>
-          <p className="text-xs cursor-pointer hover:underline ">
-            {entry.updated_at && formatCreatedAt(entry.updated_at)}
-          </p>
-          <Link
-            href={`/author/${entry?.profiles.username}`}
-            className="text-sm cursor-pointer text-emerald-500 hover:underline"
-          >
-            {entry.profiles?.username}
-          </Link>
-          {session && (
-            <div className="flex items-center ">
-              {session?.user.id === entry.user_id ? (
-                <DropdownMenuAuthor entry={entry} />
-              ) : (
-                <DropdownMenuEntry />
-              )}
-            </div>
-          )}
+        {/* <div className="flex flex-col-reverse items-end text-sm bg-red-400 md:flex md:flex-row md:items-center md:gap-2 "> */}
+        <div className="flex flex-col items-end gap-1 md:flex-row md:items-center md:gap-2 ">
+          <div className="flex gap-1">
+            <p className="text-xs cursor-pointer hover:underline ">
+              {formatCreatedAt(entry.created_at)}
+            </p>
+            <p className="text-xs cursor-pointer hover:underline ">
+              {entry.updated_at && formatCreatedAt(entry.updated_at)}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Link
+              href={`/author/${entry?.profiles.username}`}
+              className="text-sm cursor-pointer text-emerald-500 hover:underline"
+            >
+              {entry.profiles?.username}
+            </Link>
+            {session && (
+              <div className="flex items-center ">
+                {session?.user.id === entry.user_id ? (
+                  <DropdownMenuAuthor entry={entry} />
+                ) : (
+                  <DropdownMenuEntry />
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </>
+    </section>
   );
 };
 
