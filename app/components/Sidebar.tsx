@@ -28,6 +28,15 @@ interface SidebarProps {
   todayTopic?: TodayTopics;
 }
 
+const EmptyTodaySidebar = () => {
+  return (
+    <div className="pt-4">
+      <p className="text-xl text-gray-400">today</p>
+      <p className="text-xs text-gray-200">nothing here</p>
+    </div>
+  );
+};
+
 const Sidebar = ({ topics, todayTopic }: SidebarProps) => {
   const { navbarCategory } = useAppSelector((state) => state.setNavbarCategory);
 
@@ -36,6 +45,7 @@ const Sidebar = ({ topics, todayTopic }: SidebarProps) => {
       <>
         <div className="fixed z-20 hidden w-64 h-full pb-32 overflow-y-auto text-white mt-28 lg:block">
           <div className="flex-col items-start justify-start hidden md:flex ">
+            {todayTopic?.length === 0 && <EmptyTodaySidebar />}
             {todayTopic?.map((item) => (
               <div
                 key={item.id}
@@ -62,7 +72,10 @@ const Sidebar = ({ topics, todayTopic }: SidebarProps) => {
       <div className="fixed z-20 hidden w-64 h-full pb-32 overflow-y-auto text-white mt-28 lg:block">
         <div className="flex-col items-start justify-start hidden md:flex ">
           {topics?.map((item) => (
-            <div key={item.id} className="flex items-center justify-between w-full">
+            <div
+              key={item.id}
+              className="flex items-center justify-between w-full"
+            >
               <Link
                 lang="en"
                 href={`/topic/${item.title.replaceAll(" ", "-")}`}

@@ -13,6 +13,16 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import SearchInTopicMenu from "./SearchInTopicMenu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/app/components/ui/DropdownMenu";
+import { BsThreeDots } from "react-icons/bs";
+import { ChevronDown, Flag, Mail } from "lucide-react";
+import { BiBlock } from "react-icons/bi";
 
 export type NewEntries =
   | {
@@ -133,43 +143,61 @@ const TopicNavbar = ({
             )}
             {/* Left handside */}
             <div>
-              <Select
-                onValueChange={(e) => {
-                  const params = new URLSearchParams();
-                  params.append("page", (Number(e) + 1).toString());
-                  router.push(pathname + "?" + params.toString());
-                }}
-              >
-                {/* <SelectTrigger className="w-[180px]"> */}
-                <SelectTrigger className="border-none w-fit h-fit md:w-16 md:h-8 ring-0 focus:ring-0 bg-neutral-800">
-                  <SelectValue
-                    placeholder={searchParams.page ? searchParams.page : 1}
-                  />
-                </SelectTrigger>
-                <SelectContent className="w-16 bg-neutral-800 ">
-                  {Array.from({ length: entryLength }, (x, k) => (
-                    <SelectGroup key={k} className="w-16">
-                      <SelectItem
-                        className="focus:bg-neutral-700"
-                        value={k.toString()}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="default"
+                    // className="bg-transparent w-fit h-fit hover:bg-transparent"
+                    className="text-gray-400 bg-transparent hover:bg-neutral-800 border-neutral-800"
+                  >
+                    <p>{page}</p>
+                    <ChevronDown className="w-4 h-4 ml-4 text-emerald-400" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-16 border-none bg-neutral-800">
+                  {Array.from({ length: entryLength }, (_, i) => (
+                    <DropdownMenuGroup key={i}>
+                      <Link
+                        href={{
+                          pathname,
+                          query: {
+                            // page: page + 1,
+                            ...(selectedFilter && { a: selectedFilter }),
+                            page: i + 1,
+                          },
+                        }}
                       >
-                        {k + 1}
-                      </SelectItem>
-                    </SelectGroup>
+                        <DropdownMenuItem className="cursor-pointer focus:bg-neutral-500">
+                          <span>{i + 1}</span>
+                        </DropdownMenuItem>
+                      </Link>
+                    </DropdownMenuGroup>
                   ))}
-                </SelectContent>
-              </Select>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             {/* Right handside */}
             <div className="text-sm">/</div>
             <div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-gray-400 bg-transparent hover:bg-neutral-800 border-neutral-800"
+              <Link
+                href={{
+                  pathname,
+                  query: {
+                    // page: page + 1,
+                    ...(selectedFilter && { a: selectedFilter }),
+                    page: entryLength,
+                  },
+                }}
               >
-                {entryLength}
-              </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-gray-400 bg-transparent hover:bg-neutral-800 border-neutral-800"
+                >
+                  {entryLength}
+                </Button>
+              </Link>
             </div>
             {searchParams.page !== entryLength.toString() && (
               <Link
