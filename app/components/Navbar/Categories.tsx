@@ -3,6 +3,7 @@
 import { useAppDispatch, useAppSelector } from "@/app/hooks/reduxHooks";
 import { setCategory } from "@/app/redux/slices/setNavbarCategory";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export const categories = [
   {
@@ -27,12 +28,15 @@ export const categories = [
 const Categories = () => {
   const dispatch = useAppDispatch();
   const { navbarCategory } = useAppSelector((state) => state.setNavbarCategory);
+  const pathname = usePathname();
 
   return (
     <div className="flex flex-row gap-1 pt-4 md:gap-4 lg:gap-2 justify-items-start">
       {categories.map((item) => (
         <Link
-          href={"/"}
+          href={{
+            pathname,
+          }}
           onClick={() => {
             dispatch(setCategory(item.label));
           }}
