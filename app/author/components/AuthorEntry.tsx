@@ -5,6 +5,9 @@ import { Author } from "@/types/types";
 import { Session } from "@supabase/supabase-js";
 import AuthorEntryComponent from "./AuthorEntryComponent";
 import Favorites from "./Favorites";
+import AuthorEntryComponentTest, {
+  AuthorPage,
+} from "./AuthorEntryComponentTest";
 
 export type Result =
   | {
@@ -80,18 +83,30 @@ export type Item = {
 };
 
 interface AuthorEntryProps {
-  author: Author;
+  // author: Author;
   session: Session | null;
   favEntries: FavEntries;
+  authorPage: AuthorPage;
+  username: string;
 }
 
-const AuthorEntry = ({ author, session, favEntries }: AuthorEntryProps) => {
+const AuthorEntry = ({
+  session,
+  favEntries,
+  authorPage,
+  username,
+}: AuthorEntryProps) => {
   const { category } = useAppSelector((state) => state.authorPageCategory);
 
   return category === "favorites" ? (
     <Favorites favEntries={favEntries} session={session} />
   ) : (
-    <AuthorEntryComponent author={author} session={session} />
+    // <AuthorEntryComponent author={author} session={session} />
+    <AuthorEntryComponentTest
+      authorPage={authorPage}
+      session={session}
+      username={username}
+    />
   );
 };
 export default AuthorEntry;
