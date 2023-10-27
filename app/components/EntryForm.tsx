@@ -1,11 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useSupabase } from "../providers/SupabaseProvider";
 import { Button } from "./ui/Button";
 import { Textarea } from "./ui/Textarea";
 import { useToast } from "./ui/use-toast";
+import TextareaDialog from "./TextareaDialog/TextareaDialog";
 
 type NewEntries =
   | {
@@ -87,6 +88,13 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
   const router = useRouter();
   const { toast } = useToast();
 
+  const [linkInput, setLinkInput] = useState({
+    link: "http://",
+    alias: "",
+    spoiler: "",
+  });
+  // const [spoiler, setSpoiler] = useState("");
+
   //* create new entry
   const handleSubmitNewEntry = async () => {
     try {
@@ -159,16 +167,59 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
     router.refresh();
   };
 
+  const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target;
+    setLinkInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-col px-3 pb-4 bg-neutral-800">
+      <div className="flex flex-col px-3 pb-4 bg-neutral-900">
         <div className="flex items-center justify-start h-12 gap-2 ">
-          <button className="px-2 py-1 text-sm rounded bg-neutral-700">
+          {/* <button className="px-2 py-1 text-sm rounded bg-neutral-700">
             http://
-          </button>
-          <button className="px-2 py-1 text-sm rounded bg-neutral-700">
+          </button> */}
+          <TextareaDialog
+            // value="http://"
+            value={linkInput.link}
+            secondaryValue={linkInput.alias}
+            name="link"
+            secondaryName="alias"
+            onChange={handleLinkChange}
+            dialogButtonTitle="http://"
+            dialogDesc="which address to link?"
+            dialogTitle="nextsozluk"
+            // value="http:/"
+            inputRef={inputRef}
+            secondaryInput
+            label="link"
+            labelSecondary="alias"
+            onClick={() => {
+              //@ts-ignore
+              inputRef.current.value += `[${linkInput.link} ${linkInput.alias}]`;
+            }}
+          />
+          {/* <button className="px-2 py-1 text-sm rounded bg-neutral-700">
             --spoiler--
-          </button>
+          </button> */}
+          <TextareaDialog
+            value={linkInput.spoiler}
+            name="spoiler"
+            onChange={handleLinkChange}
+            dialogButtonTitle="--spoiler--"
+            dialogTitle="what to write between spoiler tags?"
+            // value="http:/"
+            inputRef={inputRef}
+            secondaryInput={false}
+            label="spoiler"
+            onClick={() => {
+              //@ts-ignore
+              inputRef.current.value += `--\`spoiler\`--\n${linkInput.spoiler}\n--\`spoiler\`--\n`;
+            }}
+          />
         </div>
         <Textarea
           ref={inputRef}
@@ -182,7 +233,8 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
                   params?.slug as string
                 )}`
           }
-          className="h-20 text-gray-200 transition-[height] duration-500 ease-in border-2 focus:h-80 border-neutral-600 focus:border-emerald-600 focus-visible:ring-0 placeholder:text-gray-400"
+          // className="h-20 text-gray-200 transition-[height] duration-500 ease-in border-2 focus:h-80 border-neutral-600 focus:border-emerald-600 focus-visible:ring-0 placeholder:text-gray-400"
+          className="text-gray-200 h-80 border-neutral-600 focus:border-emerald-600 focus-visible:ring-0 placeholder:text-gray-400"
         />
       </div>
       <Button
