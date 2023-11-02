@@ -1,6 +1,9 @@
 "use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  Session,
+  createClientComponentClient,
+} from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import AuthInput from "../components/Inputs/AuthInput";
@@ -86,10 +89,11 @@ const LoginForm = () => {
               provider: "google",
               options: {
                 redirectTo: `${location.origin}/auth/callback`,
+                queryParams: {
+                  prompt: "select_account",
+                },
               },
             });
-            console.log(data);
-
             if (data) {
               toast({
                 title: "Login succesful",
@@ -112,10 +116,11 @@ const LoginForm = () => {
               provider: "github",
               options: {
                 redirectTo: `${location.origin}/auth/callback`,
-                // redirectTo: "http://localhost:3000/auth/callback",
+                queryParams: {
+                  prompt: "select_account",
+                },
               },
             });
-            console.log({ data, error });
             if (data) {
               toast({
                 title: "Login succesful",
