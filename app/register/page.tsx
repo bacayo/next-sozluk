@@ -22,11 +22,9 @@ const RegisterPage = async () => {
   }
 
   return (
-    <div className="pt-28">
-      <Container>
-        <p className="py-2 text-lg font-bold">Register</p>
-        <RegisterForm />
-      </Container>
+    <div className="flex-grow pt-28 lg:ml-64 lg:pl-10 ">
+      <p className="py-2 text-lg font-bold">Register</p>
+      <RegisterForm />
     </div>
   );
 };

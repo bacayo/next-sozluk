@@ -22,17 +22,14 @@ const LoginPage = async () => {
     .single();
 
   return (
-    <div className="pt-28">
-      <Container>
-        <p className="py-2 font-bold">Login</p>
-        {session && (
-          <div className="pb-4 text-sm text-red-700">
-            {`just to let you know, you are already logged in as '${user?.username}'`}
-          </div>
-        )}
-        <LoginForm />
-        {/* </div> */}
-      </Container>
+    <div className="flex-grow pt-28 lg:ml-64 lg:pl-10 ">
+      <p className="py-2 font-bold">Login</p>
+      {session && (
+        <div className="pb-4 text-sm text-red-700">
+          {`just to let you know, you are already logged in as '${user?.username}'`}
+        </div>
+      )}
+      <LoginForm />
     </div>
   );
 };
