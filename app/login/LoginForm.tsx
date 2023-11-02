@@ -85,9 +85,10 @@ const LoginForm = () => {
             const { data, error } = await supabase.auth.signInWithOAuth({
               provider: "google",
               options: {
-                // redirectTo: `${location.origin}/auth/callback`,
+                redirectTo: `${location.origin}/auth/callback`,
               },
             });
+            console.log(data);
 
             if (data) {
               toast({
@@ -110,7 +111,7 @@ const LoginForm = () => {
             const { data, error } = await supabase.auth.signInWithOAuth({
               provider: "github",
               options: {
-                // redirectTo: `${location.origin}/auth/callback`,
+                redirectTo: `${location.origin}/auth/callback`,
                 // redirectTo: "http://localhost:3000/auth/callback",
               },
             });
