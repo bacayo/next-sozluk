@@ -49,12 +49,12 @@ const Sidebar = ({ topics, todayTopic }: SidebarProps) => {
             {todayTopic?.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center justify-between w-full pr-2"
+                className="flex items-center justify-between w-full pr-2 hover:bg-neutral-700"
               >
                 <Link
                   lang="en"
                   href={`/topic/${item.title.replaceAll(" ", "-")}`}
-                  className="w-full p-2 cursor-pointer hover:bg-neutral-700"
+                  className="w-full p-2 cursor-pointer "
                 >
                   {item.title}
                 </Link>
@@ -74,12 +74,12 @@ const Sidebar = ({ topics, todayTopic }: SidebarProps) => {
           {topics?.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between w-full"
+              className="flex items-center justify-between w-full hover:bg-neutral-700"
             >
               <Link
                 lang="en"
                 href={`/topic/${item.title.replaceAll(" ", "-")}`}
-                className="w-full p-2 cursor-pointer hover:bg-neutral-700"
+                className="w-full p-2 cursor-pointer "
               >
                 {item.title}
               </Link>
