@@ -1,14 +1,13 @@
 "use client";
 
 import {
-  Session,
-  createClientComponentClient,
+  createClientComponentClient
 } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { RiGithubFill, RiGoogleFill } from "react-icons/ri";
 import AuthInput from "../components/Inputs/AuthInput";
 import OAuthButton from "../components/OAuthButton";
-import { RiGithubFill, RiGoogleFill } from "react-icons/ri";
 import { useToast } from "../components/ui/use-toast";
 
 const LoginForm = () => {
@@ -100,7 +99,7 @@ const LoginForm = () => {
                 variant: "success",
               });
             }
-            router.refresh();
+            // router.refresh();
           } catch (error: any) {
             throw new Error("Something went wrong", error);
           }
