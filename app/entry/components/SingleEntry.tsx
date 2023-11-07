@@ -54,7 +54,7 @@ const SingleEntry = ({
   return (
     <>
       <Topic topic={topicTitle} />
-      <TopicNavbar searchParams={params} />
+      {/* <TopicNavbar searchParams={params} /> */}
       <Button
         size="default"
         className="w-full text-gray-200 bg-neutral-800 hover:bg-neutral-700"
