@@ -1,11 +1,9 @@
-import Topic from "@/app/components/Topic/Topic";
 import { Database } from "@/lib/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { format, sub } from "date-fns";
+import { sub } from "date-fns";
 import { cookies } from "next/headers";
-import TopicClient from "../components/TopicClient";
-import TopicNavbar from "../components/TopicNavbar";
 import NoEntry from "../components/NoEntry";
+import TopicClient from "../components/TopicClient";
 
 const FROM = 0;
 const TO = 9;
@@ -33,14 +31,16 @@ const TopicPage = async ({ params, searchParams }: Props) => {
     .eq("title", decodeURIComponent(params.slug).replaceAll("-", " "))
     .single();
 
-  const { data: allEntries } = await supabase
+  const { data: allEntries, count: allEntriesCount } = await supabase
     .from("entry")
-    .select("*,topics!inner(*),favorites(*),profiles(*)")
+    .select("*,topics!inner(*),favorites(*),profiles(*)", {
+      count: "exact",
+    })
     .eq("topics.title", decodeURIComponent(params.slug).replaceAll("-", " "));
 
-  const { data: entries } = await supabase
+  const { data: entries, count: pageNumberEntryCount } = await supabase
     .from("entry")
-    .select("*,topics!inner(*),favorites(*),profiles(*)")
+    .select("*,topics!inner(*),favorites(*),profiles(*)", { count: "exact" })
     .eq("topics.title", decodeURIComponent(params.slug).replaceAll("-", " "))
     .order("created_at", { ascending: true })
     .range(
@@ -56,6 +56,7 @@ const TopicPage = async ({ params, searchParams }: Props) => {
     data: { session },
   } = await supabase.auth.getSession();
 
+  // Incorrect page number
   if (
     Number(searchParams.page) > Math.ceil((allEntries?.length as number) / 10)
   ) {
@@ -70,10 +71,11 @@ const TopicPage = async ({ params, searchParams }: Props) => {
     );
   }
 
+  // Most voted entries
   if (searchParams.a === "all") {
-    const { data: entries } = await supabase
+    const { data: entries, count: entryCount } = await supabase
       .from("entry")
-      .select("*,topics!inner(*),favorites(*),profiles(*)")
+      .select("*,topics!inner(*),favorites(*),profiles(*)", { count: "exact" })
       .eq("topics.title", decodeURIComponent(params.slug).replaceAll("-", " "))
       .range(
         searchParams.page && Number(searchParams.page) !== 1
@@ -93,14 +95,16 @@ const TopicPage = async ({ params, searchParams }: Props) => {
         params={params}
         searchParams={searchParams}
         session={session}
+        entryCount={entryCount as number}
       />
     );
   }
 
+  // Today entries only
   if (searchParams.a === "today") {
-    const { data: entries } = await supabase
+    const { data: entries, count: entryCount } = await supabase
       .from("entry")
-      .select("*,topics!inner(*),favorites(*),profiles(*)")
+      .select("*,topics!inner(*),favorites(*),profiles(*)", { count: "exact" })
       .eq("topics.title", decodeURIComponent(params.slug).replaceAll("-", " "))
       .gte("created_at", aDayAgo)
       .range(
@@ -112,17 +116,6 @@ const TopicPage = async ({ params, searchParams }: Props) => {
           : 9
       );
 
-    if (entries?.length === 0) {
-      <div className="flex flex-col flex-grow gap-4 pt-28 lg:ml-64 lg:pl-10">
-        <TopicNavbar
-          topics={topics}
-          allEntries={allEntries}
-          entries={entries}
-          searchParams={searchParams}
-        />
-      </div>;
-    }
-
     return (
       <TopicClient
         topics={topics}
@@ -131,10 +124,44 @@ const TopicPage = async ({ params, searchParams }: Props) => {
         params={params}
         searchParams={searchParams}
         session={session}
+        count={allEntriesCount}
+        entryCount={entryCount as number}
       />
     );
   }
 
+  // User search for links only
+  if (searchParams.a === "links") {
+    const { data: linkEntries, count: entryCount } = await supabase
+      .from("entry")
+      .select("*,topics!inner(*),favorites(*),profiles(*)", { count: "exact" })
+      .eq("topics.title", decodeURIComponent(params.slug).replaceAll("-", " "))
+      .order("created_at", { ascending: true })
+      .like("text", "%[https://%")
+      .range(
+        searchParams.page && Number(searchParams.page) !== 1
+          ? Number(searchParams.page) * 10 - 10
+          : FROM,
+        searchParams.page && Number(searchParams.page) !== 1
+          ? Number(searchParams.page) * 10 - 1
+          : TO
+      );
+
+    return (
+      <TopicClient
+        topics={topics}
+        allEntries={allEntries}
+        entries={linkEntries}
+        params={params}
+        searchParams={searchParams}
+        session={session}
+        count={allEntriesCount}
+        entryCount={entryCount as number}
+      />
+    );
+  }
+
+  // All entries in topic
   return (
     <TopicClient
       topics={topics}
@@ -143,6 +170,7 @@ const TopicPage = async ({ params, searchParams }: Props) => {
       params={params}
       searchParams={searchParams}
       session={session}
+      entryCount={allEntriesCount as number}
     />
   );
 };
