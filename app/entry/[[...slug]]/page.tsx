@@ -13,15 +13,7 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
     cookies: () => cookieStore,
   });
 
-  console.log(slug.length);
-
   const entryId = slug.length === 2 ? slug[1] : slug[0];
-
-  // const { data: entry } = await supabase
-  //   .from("entry")
-  //   .select("*,topics(*)")
-  //   .eq("id", entryId)
-  //   .single();
 
   const { data: entry } = await supabase
     .from("entry")
@@ -37,10 +29,13 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
       decodeURIComponent(entry?.topics?.title as string).replaceAll("-", " ")
     );
 
+  let entryIndex = allEntries?.findIndex((entry) => entry.id === entryId);
+  let entriesBefore = entryIndex;
+  let entriesAfter = allEntries!.length - entriesBefore! - 1;
+
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  console.log(allEntries);
 
   //1fa06f9a-432d-4708-bf52-4dc45726a280
 
@@ -57,6 +52,8 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
           params={params}
           topicTitle={entry.topics?.title as string}
           session={session}
+          afterEntryCount={entriesAfter}
+          beforeEntryCount={entriesBefore as number}
         />
       </main>
     );
