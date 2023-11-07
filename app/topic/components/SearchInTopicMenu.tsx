@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   DropdownMenu,
@@ -16,8 +18,11 @@ import {
   User2Icon,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const SearchInTopicMenu = () => {
+  const pathname = usePathname();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -37,10 +42,19 @@ const SearchInTopicMenu = () => {
               <span>today</span>
             </DropdownMenuItem>
           </Link>
-          <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
-            <LinkIcon className="w-4 h-4 mr-2" />
-            <span>links</span>
-          </DropdownMenuItem>
+          <Link
+            href={{
+              pathname,
+              query: {
+                a: "links",
+              },
+            }}
+          >
+            <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
+              <LinkIcon className="w-4 h-4 mr-2" />
+              <span>links</span>
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
             <MessageSquare className="w-4 h-4 mr-2" />
             <span>with replies</span>

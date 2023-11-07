@@ -1,28 +1,10 @@
 "use client";
 
-import { Button } from "@/app/components/ui/Button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/app/components/ui/Select";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useMemo } from "react";
+import Pagination from "./Pagination";
 import SearchInTopicMenu from "./SearchInTopicMenu";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/app/components/ui/DropdownMenu";
-import { BsThreeDots } from "react-icons/bs";
-import { ChevronDown, Flag, Mail } from "lucide-react";
-import { BiBlock } from "react-icons/bi";
 
 export type NewEntries =
   | {
@@ -66,23 +48,21 @@ interface TopicNavbarProps {
   allEntries?: NewEntries;
   entries?: NewEntries;
   topics?: Topics;
+  entryCount: number;
 }
 
 const TopicNavbar = ({
   searchParams,
-  allEntries,
   entries,
-  topics,
+  entryCount,
 }: TopicNavbarProps) => {
   const pathname = usePathname();
-  const router = useRouter();
   const page =
     typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
 
   const entryLength = useMemo(() => {
-    const length = allEntries?.length;
-    return Math.ceil((length as number) / 10);
-  }, [allEntries]);
+    return Math.ceil(entryCount / 10);
+  }, [entryCount]);
 
   const selectedFilter = searchParams.a;
 
@@ -120,106 +100,16 @@ const TopicNavbar = ({
             </div>
           </div>
         </div>
+        {/* Entry count */}
+        {/* {entryLength > 1 && entries?.length !== 0 && ( */}
         {entryLength > 1 && entries?.length !== 0 && (
-          <div className="flex flex-row items-center justify-end gap-2 md:justify-center ">
-            {searchParams.page !== "1" && searchParams.page && (
-              <Link
-                href={{
-                  pathname,
-                  query: {
-                    ...(selectedFilter && { a: selectedFilter }),
-                    page: page > 1 ? page - 1 : 1,
-                  },
-                }}
-              >
-                <Button
-                  size="sm"
-                  className="text-gray-400 bg-transparent hover:bg-neutral-800 border-neutral-800"
-                  variant="outline"
-                >
-                  «
-                </Button>
-              </Link>
-            )}
-            {/* Left handside */}
-            <div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="default"
-                    // className="bg-transparent w-fit h-fit hover:bg-transparent"
-                    className="text-gray-400 bg-transparent hover:bg-neutral-800 border-neutral-800"
-                  >
-                    <p>{page}</p>
-                    <ChevronDown className="w-4 h-4 ml-4 text-emerald-400" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-16 border-none bg-neutral-800">
-                  {Array.from({ length: entryLength }, (_, i) => (
-                    <DropdownMenuGroup key={i}>
-                      <Link
-                        href={{
-                          pathname,
-                          query: {
-                            // page: page + 1,
-                            ...(selectedFilter && { a: selectedFilter }),
-                            page: i + 1,
-                          },
-                        }}
-                      >
-                        <DropdownMenuItem className="cursor-pointer focus:bg-neutral-500">
-                          <span>{i + 1}</span>
-                        </DropdownMenuItem>
-                      </Link>
-                    </DropdownMenuGroup>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            {/* Right handside */}
-            <div className="text-sm">/</div>
-            <div>
-              <Link
-                href={{
-                  pathname,
-                  query: {
-                    // page: page + 1,
-                    ...(selectedFilter && { a: selectedFilter }),
-                    page: entryLength,
-                  },
-                }}
-              >
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-gray-400 bg-transparent hover:bg-neutral-800 border-neutral-800"
-                >
-                  {entryLength}
-                </Button>
-              </Link>
-            </div>
-            {searchParams.page !== entryLength.toString() && (
-              <Link
-                href={{
-                  pathname,
-                  query: {
-                    // page: page + 1,
-                    ...(selectedFilter && { a: selectedFilter }),
-                    page: page + 1,
-                  },
-                }}
-              >
-                <Button
-                  size="sm"
-                  className="text-gray-400 bg-transparent hover:bg-neutral-800 border-neutral-800"
-                  variant="outline"
-                >
-                  »{" "}
-                </Button>
-              </Link>
-            )}
-          </div>
+          <Pagination
+            entryLength={entryLength}
+            page={page}
+            pathname={pathname}
+            searchParams={searchParams}
+            selectedFilter={selectedFilter as string}
+          />
         )}
       </div>
     </div>

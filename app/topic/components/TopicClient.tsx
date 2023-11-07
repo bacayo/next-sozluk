@@ -1,12 +1,12 @@
 "use client";
 
-import Topic from "@/app/components/Topic/Topic";
-import React from "react";
-import TopicNavbar, { NewEntries, Topics } from "./TopicNavbar";
-import Entry from "@/app/components/Topic/Entry";
-import { Session } from "@supabase/supabase-js";
 import EntryForm from "@/app/components/EntryForm";
+import Entry from "@/app/components/Topic/Entry";
+import Topic from "@/app/components/Topic/Topic";
+import { Session } from "@supabase/supabase-js";
 import { usePathname, useRouter } from "next/navigation";
+import ShowAllButton from "./ShowAllButton";
+import TopicNavbar, { NewEntries, Topics } from "./TopicNavbar";
 
 interface TopicClientProps {
   session: Session | null;
@@ -17,6 +17,8 @@ interface TopicClientProps {
     slug: string;
   };
   topics: Topics;
+  count?: number | null;
+  entryCount: number;
 }
 
 const TopicClient = ({
@@ -26,6 +28,8 @@ const TopicClient = ({
   entries,
   params,
   topics,
+  count,
+  entryCount,
 }: TopicClientProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -44,15 +48,40 @@ const TopicClient = ({
           searchParams={searchParams}
           allEntries={allEntries}
           entries={entries}
+          entryCount={entryCount}
         />
       </div>
-      <div>
-        {entries?.map((entry) => (
-          <div key={entry.id}>
-            <Entry entry={entry} session={session} />
-          </div>
-        ))}
-      </div>
+      {/* {entries!.length > 0 ? ( */}
+      {entries!.length > 0 ? (
+        <div>
+          {entries?.map((entry) => (
+            <div key={entry.id}>
+              <Entry entry={entry} session={session} />
+            </div>
+          ))}
+          {searchParams.a === "links" && (
+            <ShowAllButton
+              count={allEntries?.length as number}
+              onClick={() => {
+                router.replace(pathname);
+              }}
+            />
+          )}
+        </div>
+      ) : (
+        <main className="flex flex-col gap-3 pl-2">
+          <p>
+            no suitable entries were found with the criteria you specified.{" "}
+          </p>
+          <ShowAllButton
+            count={count as number}
+            onClick={() => {
+              router.replace(pathname);
+            }}
+          />
+        </main>
+      )}
+
       {session && (
         <EntryForm
           params={params}
