@@ -20,7 +20,11 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const SearchInTopicMenu = () => {
+interface SearchInTopicMenuProps {
+  topicTitle: string;
+}
+
+const SearchInTopicMenu = ({ topicTitle }: SearchInTopicMenuProps) => {
   const pathname = usePathname();
 
   return (
@@ -44,7 +48,8 @@ const SearchInTopicMenu = () => {
           </Link>
           <Link
             href={{
-              pathname,
+              // pathname,
+              pathname: `/topic/${topicTitle}`,
               query: {
                 a: "links",
               },

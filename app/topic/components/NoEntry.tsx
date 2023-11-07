@@ -35,12 +35,12 @@ const NoEntry = ({
         }}
         topic={slug}
       />
-      {/* <TopicNavbar
+      <TopicNavbar
         topics={topics}
         allEntries={allEntries}
         searchParams={searchParams}
         entries={entries}
-      /> */}
+      />
       <p>no suitable entries were found with the criteria you specified.</p>
     </div>
   );

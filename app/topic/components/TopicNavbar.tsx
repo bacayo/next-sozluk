@@ -48,20 +48,22 @@ interface TopicNavbarProps {
   allEntries?: NewEntries;
   entries?: NewEntries;
   topics?: Topics;
-  entryCount: number;
+  entryCount?: number;
+  topicTitle?: string;
 }
 
 const TopicNavbar = ({
   searchParams,
   entries,
   entryCount,
+  topicTitle,
 }: TopicNavbarProps) => {
   const pathname = usePathname();
   const page =
     typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
 
   const entryLength = useMemo(() => {
-    return Math.ceil(entryCount / 10);
+    return Math.ceil((entryCount as number) / 10);
   }, [entryCount]);
 
   const selectedFilter = searchParams.a;
@@ -92,7 +94,7 @@ const TopicNavbar = ({
           </div>
           {/* Search */}
           <div>
-            <SearchInTopicMenu />
+            <SearchInTopicMenu topicTitle={topicTitle as string} />
           </div>
           <div>
             <div className="font-bold text-gray-400 hover:cursor-pointer hover:text-emerald-500">

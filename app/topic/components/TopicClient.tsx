@@ -49,6 +49,7 @@ const TopicClient = ({
           allEntries={allEntries}
           entries={entries}
           entryCount={entryCount}
+          topicTitle={topics?.title}
         />
       </div>
       {/* {entries!.length > 0 ? ( */}
