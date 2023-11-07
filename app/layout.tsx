@@ -38,8 +38,8 @@ export default async function RootLayout({
 
   const { data: todayTopic } = await supabase
     .from("topics")
-    .select("*,entry(*)")
-    .gte("created_at", aDayAgo);
+    .select("*,entry!inner(*)")
+    .gte("entry.created_at", aDayAgo);
 
   const { data: myProfile } = await supabase
     .from("profiles")
