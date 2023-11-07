@@ -1,7 +1,6 @@
 import { Database } from "@/lib/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import Container from "../components/Container";
 import EntryForm from "../components/EntryForm";
 
 interface AddNewTopicPageProps {
@@ -21,8 +20,8 @@ const AddNewTopicPage = async ({ searchParams }: AddNewTopicPageProps) => {
   } = await supabase.auth.getSession();
 
   return (
-    <Container>
-      <div className="flex flex-row flex-grow w-full pt-28 ">
+    <div className="flex-grow pt-28 lg:ml-64 lg:pl-10 ">
+      <div className="flex flex-row flex-grow w-full ">
         {/* <Sidebar topics={topics} /> */}
         <div className="flex flex-col flex-grow gap-2 ml-2 ">
           <h1 className="text-2xl font-bold text-green-600 hover:underline hover:cursor-pointer">
@@ -39,7 +38,7 @@ const AddNewTopicPage = async ({ searchParams }: AddNewTopicPageProps) => {
           </div>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 export default AddNewTopicPage;
