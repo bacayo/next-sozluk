@@ -1,5 +1,4 @@
 "use client";
-import { Result } from "@/app/author/components/AuthorEntry";
 import Entry from "@/app/components/Topic/Entry";
 import Topic from "@/app/components/Topic/Topic";
 import { Button } from "@/app/components/ui/Button";
@@ -7,7 +6,7 @@ import TopicNavbar from "@/app/topic/components/TopicNavbar";
 import { Database } from "@/lib/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Session } from "@supabase/supabase-js";
-import React, { useState } from "react";
+import Link from "next/link";
 
 interface SingleEntryProps {
   topicTitle: string;
@@ -16,6 +15,8 @@ interface SingleEntryProps {
   };
   session?: Session | null;
   entry: any;
+  beforeEntryCount: number;
+  afterEntryCount: number;
 }
 
 async function getFavorites(entryId: string) {
@@ -35,40 +36,33 @@ const SingleEntry = ({
   params,
   session,
   entry,
+  afterEntryCount,
+  beforeEntryCount,
 }: SingleEntryProps) => {
-  const [userFavorites, setUserFavorites] = useState<Result>();
-  const [loading, setLoading] = useState(false);
-
-  const onLoadUserFavorites = async (entryId: string) => {
-    setLoading(true);
-    try {
-      const results = await getFavorites(entryId);
-      setUserFavorites(results);
-      setLoading(false);
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <>
       <Topic topic={topicTitle} />
-      {/* <TopicNavbar searchParams={params} /> */}
-      <Button
-        size="default"
-        className="w-full text-gray-200 bg-neutral-800 hover:bg-neutral-700"
-      >
-        5 more entries
-      </Button>
+      <TopicNavbar searchParams={params} topicTitle={topicTitle} />
+      <Link href={`/topic/${topicTitle}`}>
+        <Button
+          size="default"
+          className="w-full text-emerald-500 bg-neutral-800 hover:bg-neutral-700 "
+        >
+          {beforeEntryCount} more entries
+        </Button>
+      </Link>
       <Entry entry={entry} session={session} />
-      <br />
-      <Button
-        size="default"
-        className="w-full text-gray-200 bg-neutral-800 hover:bg-neutral-700"
-      >
-        30 more entries
-      </Button>
+      {/* <br /> */}
+      {afterEntryCount !== 0 && (
+        <Link href={`/topic/${topicTitle}`}>
+          <Button
+            size="default"
+            className="w-full text-emerald-500 bg-neutral-800 hover:bg-neutral-700"
+          >
+            {afterEntryCount} more entries
+          </Button>
+        </Link>
+      )}
     </>
   );
 };
