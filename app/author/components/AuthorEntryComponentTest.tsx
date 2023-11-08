@@ -15,10 +15,10 @@ import { Database } from "@/lib/supabase";
 import { Author } from "@/types/types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Session } from "@supabase/supabase-js";
-import { Edit, Flag, Pin, Trash } from "lucide-react";
+import { Edit, Flag, MoreHorizontal, Pin, Trash } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { FaChevronDown, FaChevronUp, FaTwitter } from "react-icons/fa";
 import { FiStar } from "react-icons/fi";
@@ -75,6 +75,7 @@ const AuthorEntryComponent = ({
   const formattedText = useFormatEntryText();
   const formattedDate = useFormatDate();
   const setFavorites = useSetFavorites();
+  const [showFullEntry, setShowFullEntry] = useState(false);
 
   const removeFavorites = async (entryId: string) => {
     const { status, data, error, statusText } = await supabase
@@ -128,8 +129,28 @@ const AuthorEntryComponent = ({
           {/* <p>{formattedText}</p> */}
           <div
             className="pt-2 whitespace-pre-line "
-            dangerouslySetInnerHTML={{ __html: formattedText(item.text) }}
+            dangerouslySetInnerHTML={{
+              __html: showFullEntry
+                ? formattedText(item.text)
+                : formattedText(item.text).slice(0, 700),
+            }}
           />
+
+          {!showFullEntry && item.text.length > 700 && (
+            <Button
+              className="flex items-center gap-2 text-sm text-gray-500 bg-transparent hover:underline hover:bg-transparent"
+              size="sm"
+              onClick={() => {
+                setShowFullEntry((prev) => !prev);
+              }}
+            >
+              <MoreHorizontal
+                size={16}
+                className=" bg-slate-800 text-emerald-600"
+              />{" "}
+              continue reading
+            </Button>
+          )}
 
           {/* Socials */}
           <div className="flex flex-col justify-between gap-2 mt-2 md:flex-row">
