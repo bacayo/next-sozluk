@@ -1,11 +1,13 @@
 "use client";
 
+import { useFormatDate } from "@/app/hooks/useFormatDate";
+import { useFormatEntryText } from "@/app/hooks/useFormatEntryText";
 import { Database } from "@/lib/supabase";
 import {
   Session,
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
-import { format } from "date-fns";
+import { Loader2, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -24,8 +26,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/DropdownMenu";
-import { Loader2 } from "lucide-react";
-import { useFormatDate } from "@/app/hooks/useFormatDate";
 interface EntryProps {
   entry: any;
   session?: Session | null;
@@ -60,8 +60,11 @@ const Entry = ({ entry, session }: EntryProps) => {
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
   const [userFavorites, setUserFavorites] = useState<Result>();
+  const [showFullEntry, setShowFullEntry] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const formatCreatedAt = useFormatDate();
+  const formattedText = useFormatEntryText();
 
   const handleVote = async (entryId: string) => {
     await supabase.rpc("increment_entry_vote", { row_id: entryId });
@@ -100,38 +103,6 @@ const Entry = ({ entry, session }: EntryProps) => {
     return x.length;
   }, [entry, session]);
 
-  const entryDate = useMemo(() => {
-    const entryDate = new Date(entry?.created_at);
-    const result = format(entryDate, "MMM d, yyyy hh:mm aaaa");
-    return result;
-  }, [entry]);
-
-  // const regex = /\[([^\]]+) ([^\]]+)\]/g;
-  // const spoilerRegex = /--`spoiler`--(.*?)--`spoiler`--/gs;
-
-  const formattedText = useMemo(() => {
-    const linkRegex = /\[([^\]]+) ([^\]]+)\]/g;
-    const spoilerRegex = /--`spoiler`--/g;
-    const placeholderRegex = /`:(.*?)`/;
-
-    const formatted = entry.text
-      .replace(linkRegex, (_: any, linkText: string, linkURL: string) => {
-        return `<a target="blank" href="${linkText}" style="color: #10b981; cursor: pointer;">${linkURL}</a>`;
-      })
-      .replace(
-        spoilerRegex,
-        '<span style="color: #10b981; cursor: pointer; display:flex; flex-direction:column">--spoiler--</span>'
-      )
-      .replace(placeholderRegex, (text: string) => {
-        const extractedText = text.match(placeholderRegex);
-        if (extractedText) {
-          return `<a style="color: #10b981; cursor: pointer;" href="/topic/${extractedText[1]}">*</a>`;
-        }
-      });
-
-    return formatted;
-  }, [entry]);
-
   const onLoadUserFavorites = async (entryId: string) => {
     setLoading(true);
     try {
@@ -148,9 +119,27 @@ const Entry = ({ entry, session }: EntryProps) => {
     <section className="mb-8 ">
       <div
         className="p-2 whitespace-pre-line "
-        dangerouslySetInnerHTML={{ __html: formattedText }}
+        dangerouslySetInnerHTML={{
+          __html: showFullEntry
+            ? formattedText(entry.text)
+            : formattedText(entry.text).slice(0, 700),
+        }}
       />
-
+      {!showFullEntry && entry.text.length > 700 && (
+        <Button
+          className="flex items-center gap-2 text-sm text-gray-500 bg-transparent hover:underline hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            setShowFullEntry((prev) => !prev);
+          }}
+        >
+          <MoreHorizontal
+            size={16}
+            className="text-left bg-slate-800 text-emerald-600"
+          />{" "}
+          continue reading
+        </Button>
+      )}
       <div className="flex flex-col justify-between gap-2 px-2 pt-2 md:flex-row">
         <div className="flex items-center gap-3 ">
           <TfiFacebook
