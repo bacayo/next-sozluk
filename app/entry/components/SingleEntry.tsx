@@ -44,12 +44,14 @@ const SingleEntry = ({
       <Topic topic={topicTitle} />
       <TopicNavbar searchParams={params} topicTitle={topicTitle} />
       <Link href={`/topic/${topicTitle}`}>
-        <Button
-          size="default"
-          className="w-full text-emerald-500 bg-neutral-800 hover:bg-neutral-700 "
-        >
-          {beforeEntryCount} more entries
-        </Button>
+        {beforeEntryCount > 0 && (
+          <Button
+            size="default"
+            className="w-full text-emerald-500 bg-neutral-800 hover:bg-neutral-700 "
+          >
+            {beforeEntryCount} more entries
+          </Button>
+        )}
       </Link>
       <Entry entry={entry} session={session} />
       {/* <br /> */}
@@ -57,7 +59,7 @@ const SingleEntry = ({
         <Link href={`/topic/${topicTitle}`}>
           <Button
             size="default"
-            className="w-full text-emerald-500 bg-neutral-800 hover:bg-neutral-700"
+            className="w-full mb-4 text-emerald-500 bg-neutral-800 hover:bg-neutral-700"
           >
             {afterEntryCount} more entries
           </Button>
