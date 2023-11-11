@@ -12,10 +12,12 @@ import { ChevronDown } from "lucide-react";
 import React, { useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAppSelector } from "@/app/hooks/reduxHooks";
 
 interface FooterProps {
   searchParams: { [key: string]: string | string[] | undefined };
   allEntriesLength: number | null;
+  favEntriesCount: number;
 }
 
 interface NavButtonProps {
@@ -51,13 +53,25 @@ const NavButton = ({ pathname, content, page }: NavButtonProps) => {
   );
 };
 
-const Footer = ({ searchParams, allEntriesLength }: FooterProps) => {
+const Footer = ({
+  searchParams,
+  allEntriesLength,
+  favEntriesCount,
+}: FooterProps) => {
   const page =
     typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
 
+  const { category } = useAppSelector((state) => state.authorPageCategory);
+
+  console.log(category);
+
   const entryLength = useMemo(() => {
-    return Math.ceil(allEntriesLength! / 10);
-  }, [allEntriesLength]);
+    if (category === "entries") {
+      return Math.ceil(allEntriesLength! / 10);
+    } else {
+      return Math.ceil(favEntriesCount! / 10);
+    }
+  }, [allEntriesLength, category, favEntriesCount]);
 
   const pathname = usePathname();
 

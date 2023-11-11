@@ -54,8 +54,6 @@ export default async function AuthorPage({
     .select("*,topics(*),favorites(*),profiles!inner(*)", { count: "exact" })
     .eq("profiles.username", slug);
 
-  console.log(count);
-
   const session = await getSession();
 
   const { data: favProf } = await supabase
@@ -64,11 +62,23 @@ export default async function AuthorPage({
     .eq("username", slug)
     .single();
 
-  const { data: favEntries, error } = await supabase
+  const {
+    data: favEntries,
+    error,
+    count: favEntriesCount,
+  } = await supabase
     .from("favorites")
-    .select("*,entry(*,favorites(*),topics(*),profiles(*))")
+    .select("*,entry(*,favorites(*),topics(*),profiles(*))", { count: "exact" })
     .eq("userId", favProf?.id)
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: true })
+    .range(
+      searchParams.page && Number(searchParams.page) !== 1
+        ? Number(searchParams.page) * 10 - 10
+        : FROM,
+      searchParams.page && Number(searchParams.page) !== 1
+        ? Number(searchParams.page) * 10 - 1
+        : TO
+    );
 
   if (authorPage?.length === 0) {
     return (
@@ -101,7 +111,11 @@ export default async function AuthorPage({
           session={session}
           favEntries={favEntries}
         />
-        <Footer searchParams={searchParams} allEntriesLength={count} />
+        <Footer
+          searchParams={searchParams}
+          allEntriesLength={count}
+          favEntriesCount={favEntriesCount as number}
+        />
       </main>
     </div>
   );

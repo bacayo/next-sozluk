@@ -12,13 +12,15 @@ import { Session } from "@supabase/supabase-js";
 import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaTwitter } from "react-icons/fa";
 import { FiStar } from "react-icons/fi";
 import { TfiFacebook } from "react-icons/tfi";
 import { FavEntries } from "./AuthorEntry";
 import FavoriteDropdownMenu from "./FavoriteDropdownMenu";
 import { useFormatDate } from "@/app/hooks/useFormatDate";
+import { Button } from "@/app/components/ui/Button";
+import { MoreHorizontal } from "lucide-react";
 
 interface FavoriteProps {
   favEntries: FavEntries;
@@ -29,6 +31,7 @@ const Favorites = ({ favEntries, session }: FavoriteProps) => {
   const formattedText = useFormatEntryText();
   const setFavorites = useSetFavorites();
   const formattedDate = useFormatDate();
+  const [showFullEntry, setShowFullEntry] = useState(false);
 
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
@@ -60,10 +63,27 @@ const Favorites = ({ favEntries, session }: FavoriteProps) => {
           <div
             className="pt-2 whitespace-pre-line "
             dangerouslySetInnerHTML={{
-              //   __html: formattedText(item.entry?.text as string),
-              __html: formattedText(item.entry?.text as string),
+              // __html: formattedText(item.entry?.text as string),
+              __html: showFullEntry
+                ? formattedText(item.entry?.text as string)
+                : formattedText(item.entry?.text as string).slice(0, 700),
             }}
           />
+          {!showFullEntry && (item.entry?.text.length as number) > 700 && (
+            <Button
+              className="flex items-center gap-2 text-sm text-gray-500 bg-transparent hover:underline hover:bg-transparent"
+              size="sm"
+              onClick={() => {
+                setShowFullEntry((prev) => !prev);
+              }}
+            >
+              <MoreHorizontal
+                size={16}
+                className=" bg-slate-800 text-emerald-600"
+              />{" "}
+              continue reading
+            </Button>
+          )}
           <div className="flex flex-row justify-between mt-2">
             <div className="flex items-center gap-3">
               <TfiFacebook
