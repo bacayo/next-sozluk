@@ -54,6 +54,7 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
           session={session}
           afterEntryCount={entriesAfter}
           beforeEntryCount={entriesBefore as number}
+          authorName={session?.user.user_metadata.user_name}
         />
       </main>
     );

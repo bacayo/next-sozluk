@@ -17,6 +17,7 @@ interface SingleEntryProps {
   entry: any;
   beforeEntryCount: number;
   afterEntryCount: number;
+  authorName: string;
 }
 
 async function getFavorites(entryId: string) {
@@ -38,11 +39,16 @@ const SingleEntry = ({
   entry,
   afterEntryCount,
   beforeEntryCount,
+  authorName,
 }: SingleEntryProps) => {
   return (
     <>
       <Topic topic={topicTitle} />
-      <TopicNavbar searchParams={params} topicTitle={topicTitle} />
+      <TopicNavbar
+        searchParams={params}
+        topicTitle={topicTitle}
+        authorName={authorName}
+      />
       <Link href={`/topic/${topicTitle}`}>
         {beforeEntryCount > 0 && (
           <Button
