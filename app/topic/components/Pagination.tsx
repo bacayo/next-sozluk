@@ -16,7 +16,6 @@ interface PaginationProps {
   searchParams: { [key: string]: string | string[] | undefined };
   page: number;
   pathname: string;
-  selectedFilter: string;
   entryLength: number;
 }
 
@@ -24,7 +23,6 @@ const Pagination = ({
   searchParams,
   page,
   pathname,
-  selectedFilter,
   entryLength,
 }: PaginationProps) => {
   return (
@@ -34,7 +32,7 @@ const Pagination = ({
           href={{
             pathname,
             query: {
-              ...(selectedFilter && { a: selectedFilter }),
+              ...searchParams,
               page: page > 1 ? page - 1 : 1,
             },
           }}
@@ -69,8 +67,7 @@ const Pagination = ({
                   href={{
                     pathname,
                     query: {
-                      // page: page + 1,
-                      ...(selectedFilter && { a: selectedFilter }),
+                      ...searchParams,
                       page: i + 1,
                     },
                   }}
@@ -91,8 +88,7 @@ const Pagination = ({
           href={{
             pathname,
             query: {
-              // page: page + 1,
-              ...(selectedFilter && { a: selectedFilter }),
+              ...searchParams,
               page: entryLength,
             },
           }}
@@ -111,8 +107,7 @@ const Pagination = ({
           href={{
             pathname,
             query: {
-              // page: page + 1,
-              ...(selectedFilter && { a: selectedFilter }),
+              ...searchParams,
               page: page + 1,
             },
           }}
