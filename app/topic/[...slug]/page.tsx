@@ -66,6 +66,7 @@ const TopicPage = async ({ params, searchParams }: Props) => {
         params={params}
         searchParams={searchParams}
         topics={topics}
+        authorName={session?.user.user_metadata.user_name}
       />
     );
   }

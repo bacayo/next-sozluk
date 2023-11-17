@@ -13,6 +13,7 @@ interface NoEntryProps {
     slug: string;
   };
   topics: Topics;
+  authorName: string;
 }
 
 const NoEntry = ({
@@ -21,6 +22,7 @@ const NoEntry = ({
   allEntries,
   searchParams,
   entries,
+  authorName,
 }: NoEntryProps) => {
   const { slug } = params;
 
@@ -40,6 +42,7 @@ const NoEntry = ({
         allEntries={allEntries}
         searchParams={searchParams}
         entries={entries}
+        authorName={authorName}
       />
       <p>no suitable entries were found with the criteria you specified.</p>
     </div>
