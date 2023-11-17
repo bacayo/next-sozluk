@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import Pagination from "./Pagination";
 import SearchInTopicMenu from "./SearchInTopicMenu";
@@ -50,6 +50,7 @@ interface TopicNavbarProps {
   topics?: Topics;
   entryCount?: number;
   topicTitle?: string;
+  authorName: string;
 }
 
 const TopicNavbar = ({
@@ -57,6 +58,7 @@ const TopicNavbar = ({
   entries,
   entryCount,
   topicTitle,
+  authorName,
 }: TopicNavbarProps) => {
   const pathname = usePathname();
   const page =
@@ -66,7 +68,8 @@ const TopicNavbar = ({
     return Math.ceil((entryCount as number) / 10);
   }, [entryCount]);
 
-  const selectedFilter = searchParams.a;
+  const params = useSearchParams();
+  const a = params.get("a");
 
   return (
     <div className="pl-2 ">
@@ -82,9 +85,7 @@ const TopicNavbar = ({
                 key={index}
                 className={`font-bold md:hover:cursor-pointer  hover:cursor-pointer hover:text-emerald-500 ${
                   // item === "all" && selectedFilter === "nice"
-                  selectedFilter === item
-                    ? " text-emerald-500"
-                    : "text-gray-400"
+                  a === item ? " text-emerald-500" : "text-gray-400"
                 }
                 `}
               >
@@ -94,7 +95,10 @@ const TopicNavbar = ({
           </div>
           {/* Search */}
           <div>
-            <SearchInTopicMenu topicTitle={topicTitle as string} />
+            <SearchInTopicMenu
+              topicTitle={topicTitle as string}
+              authorName={authorName}
+            />
           </div>
           <div>
             <div className="font-bold text-gray-400 hover:cursor-pointer hover:text-emerald-500">
@@ -110,7 +114,6 @@ const TopicNavbar = ({
             page={page}
             pathname={pathname}
             searchParams={searchParams}
-            selectedFilter={selectedFilter as string}
           />
         )}
       </div>
