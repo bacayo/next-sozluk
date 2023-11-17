@@ -18,13 +18,17 @@ import {
   User2Icon,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 interface SearchInTopicMenuProps {
   topicTitle: string;
+  authorName: string;
 }
 
-const SearchInTopicMenu = ({ topicTitle }: SearchInTopicMenuProps) => {
+const SearchInTopicMenu = ({
+  topicTitle,
+  authorName,
+}: SearchInTopicMenuProps) => {
   const pathname = usePathname();
 
   return (
@@ -68,10 +72,20 @@ const SearchInTopicMenu = ({ topicTitle }: SearchInTopicMenuProps) => {
             <ImageIcon className="w-4 h-4 mr-2" />
             <span>images</span>
           </DropdownMenuItem>
-          <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
-            <User2Icon className="w-4 h-4 mr-2" />
-            <span>my entries</span>
-          </DropdownMenuItem>
+          <Link
+            href={{
+              pathname,
+              query: {
+                a: "search",
+                author: authorName,
+              },
+            }}
+          >
+            <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
+              <User2Icon className="w-4 h-4 mr-2" />
+              <span>my entries</span>
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
