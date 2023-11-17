@@ -20,7 +20,6 @@ const TopicPage = async ({ params, searchParams }: Props) => {
   const supabase = createServerComponentClient<Database>({
     cookies: () => cookieStore,
   });
-  const { slug } = params;
 
   //  Calculate 24 hours before the current time
   const aDayAgo = sub(new Date(), { hours: 24 }).toISOString();
@@ -96,6 +95,7 @@ const TopicPage = async ({ params, searchParams }: Props) => {
         searchParams={searchParams}
         session={session}
         entryCount={entryCount as number}
+        authorName={session?.user.user_metadata.user_name}
       />
     );
   }
@@ -126,6 +126,7 @@ const TopicPage = async ({ params, searchParams }: Props) => {
         session={session}
         count={allEntriesCount}
         entryCount={entryCount as number}
+        authorName={session?.user.user_metadata.user_name}
       />
     );
   }
@@ -157,6 +158,36 @@ const TopicPage = async ({ params, searchParams }: Props) => {
         session={session}
         count={allEntriesCount}
         entryCount={entryCount as number}
+        authorName={session?.user.user_metadata.user_name}
+      />
+    );
+  }
+
+  if (searchParams.author) {
+    const {
+      data: myEntries,
+      count: myEntriesCount,
+      error: myEntriesError,
+    } = await supabase
+      .from("entry")
+      .select("*,topics!inner(*),favorites(*),profiles!inner(*)", {
+        count: "exact",
+      })
+      .eq("topics.title", decodeURIComponent(params.slug).replaceAll("-", " "))
+      .eq("profiles.username", searchParams.author)
+      .order("created_at", { ascending: true });
+
+    return (
+      <TopicClient
+        topics={topics}
+        allEntries={allEntries}
+        entries={myEntries}
+        params={params}
+        searchParams={searchParams}
+        session={session}
+        count={allEntriesCount}
+        entryCount={myEntriesCount as number}
+        authorName={session?.user.user_metadata.user_name}
       />
     );
   }
@@ -171,6 +202,7 @@ const TopicPage = async ({ params, searchParams }: Props) => {
       searchParams={searchParams}
       session={session}
       entryCount={allEntriesCount as number}
+      authorName={session?.user.user_metadata.user_name}
     />
   );
 };
