@@ -19,6 +19,7 @@ interface TopicClientProps {
   topics: Topics;
   count?: number | null;
   entryCount: number;
+  authorName: string;
 }
 
 const TopicClient = ({
@@ -30,6 +31,7 @@ const TopicClient = ({
   topics,
   count,
   entryCount,
+  authorName,
 }: TopicClientProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -50,6 +52,7 @@ const TopicClient = ({
           entries={entries}
           entryCount={entryCount}
           topicTitle={topics?.title}
+          authorName={authorName}
         />
       </div>
       {/* {entries!.length > 0 ? ( */}
