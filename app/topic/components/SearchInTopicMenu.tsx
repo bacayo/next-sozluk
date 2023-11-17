@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { Button } from "@/app/components/ui/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/app/components/ui/DropdownMenu";
-import { Button } from "@/app/components/ui/Button";
+import { Session } from "@supabase/supabase-js";
 import {
   Calendar,
   ChevronDown,
@@ -18,16 +18,18 @@ import {
   User2Icon,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 interface SearchInTopicMenuProps {
   topicTitle: string;
   authorName: string;
+  session: Session | null;
 }
 
 const SearchInTopicMenu = ({
   topicTitle,
   authorName,
+  session,
 }: SearchInTopicMenuProps) => {
   const pathname = usePathname();
 
@@ -72,20 +74,22 @@ const SearchInTopicMenu = ({
             <ImageIcon className="w-4 h-4 mr-2" />
             <span>images</span>
           </DropdownMenuItem>
-          <Link
-            href={{
-              pathname,
-              query: {
-                a: "search",
-                author: authorName,
-              },
-            }}
-          >
-            <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
-              <User2Icon className="w-4 h-4 mr-2" />
-              <span>my entries</span>
-            </DropdownMenuItem>
-          </Link>
+          {session && (
+            <Link
+              href={{
+                pathname,
+                query: {
+                  a: "search",
+                  author: authorName,
+                },
+              }}
+            >
+              <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
+                <User2Icon className="w-4 h-4 mr-2" />
+                <span>my entries</span>
+              </DropdownMenuItem>
+            </Link>
+          )}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

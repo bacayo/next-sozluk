@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import Pagination from "./Pagination";
 import SearchInTopicMenu from "./SearchInTopicMenu";
+import { Session } from "@supabase/supabase-js";
 
 export type NewEntries =
   | {
@@ -51,6 +52,7 @@ interface TopicNavbarProps {
   entryCount?: number;
   topicTitle?: string;
   authorName: string;
+  session: Session | null;
 }
 
 const TopicNavbar = ({
@@ -59,6 +61,7 @@ const TopicNavbar = ({
   entryCount,
   topicTitle,
   authorName,
+  session,
 }: TopicNavbarProps) => {
   const pathname = usePathname();
   const page =
@@ -98,6 +101,7 @@ const TopicNavbar = ({
             <SearchInTopicMenu
               topicTitle={topicTitle as string}
               authorName={authorName}
+              session={session}
             />
           </div>
           <div>

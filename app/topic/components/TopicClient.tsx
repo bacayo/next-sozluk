@@ -53,6 +53,7 @@ const TopicClient = ({
           entryCount={entryCount}
           topicTitle={topics?.title}
           authorName={authorName}
+          session={session}
         />
       </div>
       {/* {entries!.length > 0 ? ( */}
