@@ -1,5 +1,8 @@
 import { Database } from "@/lib/supabase";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  Session,
+  createServerComponentClient,
+} from "@supabase/auth-helpers-nextjs";
 import { sub } from "date-fns";
 import { cookies } from "next/headers";
 import NoEntry from "../components/NoEntry";
@@ -67,6 +70,7 @@ const TopicPage = async ({ params, searchParams }: Props) => {
         searchParams={searchParams}
         topics={topics}
         authorName={session?.user.user_metadata.user_name}
+        session={session as Session}
       />
     );
   }

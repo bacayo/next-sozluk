@@ -4,6 +4,7 @@ import Topic from "@/app/components/Topic/Topic";
 import React from "react";
 import TopicNavbar, { NewEntries, Topics } from "./TopicNavbar";
 import { usePathname, useRouter } from "next/navigation";
+import { Session } from "@supabase/supabase-js";
 
 interface NoEntryProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -14,6 +15,7 @@ interface NoEntryProps {
   };
   topics: Topics;
   authorName: string;
+  session: Session;
 }
 
 const NoEntry = ({
@@ -23,6 +25,7 @@ const NoEntry = ({
   searchParams,
   entries,
   authorName,
+  session,
 }: NoEntryProps) => {
   const { slug } = params;
 
@@ -43,6 +46,7 @@ const NoEntry = ({
         searchParams={searchParams}
         entries={entries}
         authorName={authorName}
+        session={session}
       />
       <p>no suitable entries were found with the criteria you specified.</p>
     </div>

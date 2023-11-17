@@ -48,6 +48,7 @@ const SingleEntry = ({
         searchParams={params}
         topicTitle={topicTitle}
         authorName={authorName}
+        session={session as Session}
       />
       <Link href={`/topic/${topicTitle}`}>
         {beforeEntryCount > 0 && (
