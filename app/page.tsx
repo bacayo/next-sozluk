@@ -18,10 +18,12 @@ export default async function Home() {
     .select("*,favorites(*),topics(*),profiles(*)");
 
   const { data: topics } = await supabase.from("topics").select("*,entry(*)");
-  const { data: todayTopic } = await supabase
+  const { data: todayTopic, count: todayTopicCount } = await supabase
     .from("topics")
-    .select("*,entry(*)")
+    .select("*,entry(*)", { count: "exact" })
     .gte("created_at", aDayAgo);
+
+  console.log(todayTopicCount);
 
   const { data: topTopic } = await supabase.from("topics").select("*");
 
@@ -35,6 +37,7 @@ export default async function Home() {
       session={session}
       topics={topics}
       todayTopics={todayTopic}
+      todayTopicCount={todayTopicCount as number}
     />
   );
 }

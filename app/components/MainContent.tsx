@@ -35,6 +35,7 @@ interface MainContentProps {
   session?: Session | null;
   topics?: Topics;
   todayTopics?: Topics;
+  todayTopicCount?: number;
 }
 
 const MainContent = ({
@@ -42,6 +43,7 @@ const MainContent = ({
   session,
   topics,
   todayTopics,
+  todayTopicCount,
 }: MainContentProps) => {
   const router = useRouter();
   const { navbarCategory } = useAppSelector((state) => state.setNavbarCategory);
@@ -49,38 +51,46 @@ const MainContent = ({
   if (navbarCategory === "popular" && screen.width < 640) {
     return (
       <div className="flex-grow mx-auto pt-28 lg:ml-64 lg:pl-10 ">
-        {topics?.map((topic) => {
-          return (
-            <main className="flex items-center justify-between" key={topic.id}>
-              <Link href={`/topic/${topic.title}`}>
-                <p className="p-2 text-gray-200 cursor-pointer">
-                  {topic.title}
-                </p>
-              </Link>
-              <p className="text-gray-400">{topic && topic.entry.length}</p>
-            </main>
-          );
-        })}
+        {topics?.map((topic) => (
+          <main className="flex items-center justify-between" key={topic.id}>
+            <Link href={`/topic/${topic.title}`}>
+              <p className="p-2 text-gray-200 cursor-pointer">{topic.title}</p>
+            </Link>
+            <p className="text-gray-400">{topic && topic.entry.length}</p>
+          </main>
+        ))}
       </div>
     );
   }
 
   if (navbarCategory === "today" && screen.width < 640) {
     return (
-      <div className="flex-grow mx-auto pt-28 lg:ml-64 lg:pl-10 ">
-        {todayTopics?.map((topic) => {
-          return (
-            <main className="flex items-center justify-between" key={topic.id}>
-              <Link href={`/topic/${topic.title}`}>
-                <p className="p-2 text-gray-200 cursor-pointer">
-                  {topic.title}
-                </p>
-              </Link>
-              <p className="text-gray-400">{topic && topic.entry.length}</p>
-            </main>
-          );
-        })}
-      </div>
+      <>
+        {todayTopicCount && todayTopicCount > 0 ? (
+          <div className="flex-grow mx-auto pt-28 lg:ml-64 lg:pl-10 ">
+            {todayTopics?.map((topic) => (
+              <main
+                className="flex items-center justify-between"
+                key={topic.id}
+              >
+                <Link href={`/topic/${topic.title}`}>
+                  <p className="p-2 text-gray-200 cursor-pointer">
+                    {topic.title}
+                  </p>
+                </Link>
+                <p className="text-gray-400">{topic && topic.entry.length}</p>
+              </main>
+            ))}
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-col flex-grow gap-2 mx-auto pt-28 lg:ml-64 lg:pl-10">
+              <h3 className="text-2xl text-gray-400">today</h3>
+              <p>nothing here</p>
+            </div>
+          </>
+        )}
+      </>
     );
   }
 
