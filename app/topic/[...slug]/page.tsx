@@ -136,6 +136,37 @@ const TopicPage = async ({ params, searchParams }: Props) => {
     );
   }
 
+  if (searchParams.a === "nicetoday") {
+    const { data: entries, count: entryCount } = await supabase
+      .from("entry")
+      .select("*,topics!inner(*),favorites(*),profiles(*)", { count: "exact" })
+      .eq("topics.title", decodeURIComponent(params.slug).replaceAll("-", " "))
+      .gte("created_at", aDayAgo)
+      .range(
+        searchParams.page && Number(searchParams.page) !== 1
+          ? Number(searchParams.page) * 10 - 10
+          : 0,
+        searchParams.page && Number(searchParams.page) !== 1
+          ? Number(searchParams.page) * 10 - 1
+          : 9
+      )
+      .order("vote", { ascending: false });
+
+    return (
+      <TopicClient
+        topics={topics}
+        allEntries={allEntries}
+        entries={entries}
+        params={params}
+        searchParams={searchParams}
+        session={session}
+        count={allEntriesCount}
+        entryCount={entryCount as number}
+        authorName={session?.user.user_metadata.user_name}
+      />
+    );
+  }
+
   // User search for links only
   if (searchParams.a === "links") {
     const { data: linkEntries, count: entryCount } = await supabase

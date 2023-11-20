@@ -46,7 +46,14 @@ const SearchInTopicMenu = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 shadow shadow-neutral-700 border-neutral-800 bg-neutral-800 ">
         <DropdownMenuGroup>
-          <Link href={`/`}>
+          <Link
+            href={{
+              pathname,
+              query: {
+                a: "today",
+              },
+            }}
+          >
             <DropdownMenuItem className="hover:cursor-pointer focus:bg-neutral-500">
               <Calendar className="w-4 h-4 mr-2" />
               <span>today</span>

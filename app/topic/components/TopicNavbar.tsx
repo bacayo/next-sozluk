@@ -38,7 +38,7 @@ export type NewEntries =
     }[]
   | null;
 
-const filters = ["all", "today"];
+const filters = ["all", "nicetoday"];
 
 export type Topics = {
   title: string;
@@ -92,7 +92,7 @@ const TopicNavbar = ({
                 }
                 `}
               >
-                {item}
+                {item === "nicetoday" ? "today" : item}
               </Link>
             ))}
           </div>
