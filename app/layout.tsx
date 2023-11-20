@@ -13,6 +13,8 @@ import Container from "./components/Container";
 import Sidebar from "./components/Sidebar";
 import { Toaster } from "./components/ui/Toaster";
 import { sub } from "date-fns";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 const source = Source_Sans_3({ subsets: ["latin"] });
 
@@ -55,8 +57,10 @@ export default async function RootLayout({
             <SupabaseProvider>
               <Navbar session={session} profile={myProfile} />
               <Container>
-                <Sidebar topics={topics} todayTopic={todayTopic} />
-                {children}
+                <Suspense fallback={<Loading />}>
+                  <Sidebar topics={topics} todayTopic={todayTopic} />
+                  {children}
+                </Suspense>
               </Container>
               <Toaster />
             </SupabaseProvider>
