@@ -234,7 +234,7 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
                 )}`
           }
           // className="h-20 text-gray-200 transition-[height] duration-500 ease-in border-2 focus:h-80 border-neutral-600 focus:border-emerald-600 focus-visible:ring-0 placeholder:text-gray-400"
-          className="text-gray-200 h-80 border-neutral-600 focus:border-emerald-600 focus-visible:ring-0 placeholder:text-gray-400"
+          className="h-40 text-gray-200 md:h-80 border-neutral-600 focus:border-emerald-600 focus-visible:ring-0 placeholder:text-gray-400"
         />
       </div>
       <Button
