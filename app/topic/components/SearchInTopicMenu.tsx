@@ -1,5 +1,6 @@
 "use client";
 
+import SearchInput from "@/app/components/Inputs/SearchInput";
 import { Button } from "@/app/components/ui/Button";
 import {
   DropdownMenu,
@@ -8,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/app/components/ui/DropdownMenu";
+import { Input } from "@/app/components/ui/Input";
 import { Session } from "@supabase/supabase-js";
 import {
   Calendar,
@@ -19,6 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AiOutlineSearch } from "react-icons/ai";
 
 interface SearchInTopicMenuProps {
   topicTitle: string;
@@ -97,6 +100,26 @@ const SearchInTopicMenu = ({
               </DropdownMenuItem>
             </Link>
           )}
+          <DropdownMenuItem
+            asChild
+            onSelect={(e) => e.preventDefault()}
+            className="hover:cursor-pointer focus:bg-neutral-500"
+          >
+            <div className="flex items-center w-full max-w-sm ">
+              <Input
+                type="search"
+                placeholder="words or @author"
+                className="border-none bg-neutral-700 placeholder:text-gray-400 rounded-e-none ring-offset-emerald-600"
+              />
+              <Button
+                variant="default"
+                size="icon"
+                className="border-none outline-none focus:outline-none focus-visible:outline-none rounded-s-none bg-emerald-500 hover:bg-emerald-600"
+              >
+                <AiOutlineSearch className="w-4 h-4 text-gray-200" />
+              </Button>
+            </div>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
