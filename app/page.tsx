@@ -1,9 +1,9 @@
 // import getCurrentUser from "./actions/getCurrentUser";
 import { Database } from "@/lib/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { sub } from "date-fns";
 import { cookies } from "next/headers";
 import MainContent from "./components/MainContent";
-import { sub } from "date-fns";
 
 export default async function Home() {
   const cookieStore = cookies();
@@ -22,10 +22,6 @@ export default async function Home() {
     .from("topics")
     .select("*,entry(*)", { count: "exact" })
     .gte("created_at", aDayAgo);
-
-  console.log(todayTopicCount);
-
-  const { data: topTopic } = await supabase.from("topics").select("*");
 
   const {
     data: { session },
