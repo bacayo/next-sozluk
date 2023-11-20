@@ -63,8 +63,6 @@ const Footer = ({
 
   const { category } = useAppSelector((state) => state.authorPageCategory);
 
-  console.log(category);
-
   const entryLength = useMemo(() => {
     if (category === "entries") {
       return Math.ceil(allEntriesLength! / 10);
