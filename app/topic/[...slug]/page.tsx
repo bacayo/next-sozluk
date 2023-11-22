@@ -27,6 +27,8 @@ const TopicPage = async ({ params, searchParams }: Props) => {
   //  Calculate 24 hours before the current time
   const aDayAgo = sub(new Date(), { hours: 24 }).toISOString();
 
+  console.log(searchParams);
+
   const { data: topics } = await supabase
     .from("topics")
     .select("title")
@@ -211,6 +213,38 @@ const TopicPage = async ({ params, searchParams }: Props) => {
       })
       .eq("topics.title", decodeURIComponent(params.slug).replaceAll("-", " "))
       .eq("profiles.username", searchParams.author)
+      .order("created_at", { ascending: true });
+
+    return (
+      <TopicClient
+        topics={topics}
+        allEntries={allEntries}
+        entries={myEntries}
+        params={params}
+        searchParams={searchParams}
+        session={session}
+        count={allEntriesCount}
+        entryCount={myEntriesCount as number}
+        authorName={session?.user.user_metadata.user_name}
+      />
+    );
+  }
+
+  if (searchParams.keywords) {
+    const {
+      data: myEntries,
+      count: myEntriesCount,
+      error: myEntriesError,
+    } = await supabase
+      .from("entry")
+      .select("*,topics!inner(*),favorites(*),profiles!inner(*)", {
+        count: "exact",
+      })
+      .eq("topics.title", decodeURIComponent(params.slug).replaceAll("-", " "))
+      .eq(
+        "profiles.username",
+        decodeURIComponent(String(searchParams.keywords).substring(1))
+      )
       .order("created_at", { ascending: true });
 
     return (

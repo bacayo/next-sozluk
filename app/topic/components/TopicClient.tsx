@@ -64,7 +64,7 @@ const TopicClient = ({
               <Entry entry={entry} session={session} />
             </div>
           ))}
-          {searchParams.a === "links" && (
+          {(searchParams.a === "links" || searchParams.keywords) && (
             <ShowAllButton
               count={allEntries?.length as number}
               onClick={() => {
