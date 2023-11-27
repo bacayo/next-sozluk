@@ -1,10 +1,7 @@
 "use client";
 
 import { Button } from "@/app/components/ui/Button";
-import {
-  Command,
-  CommandInput
-} from "@/app/components/ui/Command";
+import { Command, CommandInput } from "@/app/components/ui/Command";
 import {
   Popover,
   PopoverContent,
@@ -19,6 +16,7 @@ import {
   ImageIcon,
   Link as LinkIcon,
   MessageSquare,
+  Search,
   User2Icon,
 } from "lucide-react";
 import Link from "next/link";
@@ -43,23 +41,27 @@ const SearchInTopicMenu = ({
   const [query, setQuery] = useState<Profile[] | null>([]);
   const [queryText, setQueryText] = useState("");
   const [open, setOpen] = React.useState(false);
+  const [searchAuthorState, setSearchAuthorState] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("*")
-        .ilike("username", `${queryText}%`);
+      if (searchAuthorState) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("*")
+          .ilike("username", `${queryText}%`);
 
-      if (queryText === "") {
-        setQuery(null);
-      } else {
-        setQuery(data);
+        if (queryText === "") {
+          setQuery(null);
+          setSearchAuthorState(false);
+        } else {
+          setQuery(data);
+        }
       }
     };
 
     fetchUser();
-  }, [queryText, supabase]);
+  }, [queryText, supabase, searchAuthorState, topicTitle]);
 
   return (
     <>
@@ -147,17 +149,40 @@ const SearchInTopicMenu = ({
             </div>
           </div>
           <Command className="bg-neutral-700">
-            <CommandInput
-              onValueChange={(e) => {
-                if (e.startsWith("@")) {
-                  setQueryText(e.substring(1));
-                } else {
-                  setQueryText(e);
-                }
-              }}
-              className="placeholder:text-gray-400"
-              placeholder="words or @author"
-            />
+            <div className="flex items-center ">
+              <CommandInput
+                onValueChange={(e) => {
+                  if (e.startsWith("@")) {
+                    setSearchAuthorState(true);
+                    setQueryText(e.substring(1));
+                  } else {
+                    setQueryText(e);
+                  }
+                }}
+                className="placeholder:text-gray-400"
+                placeholder="words or @author"
+              />
+              <Link
+                className="flex items-center justify-center w-8 h-11 bg-emerald-700 rounded-e-md shrink-0"
+                onClick={() => {
+                  setSearchAuthorState(false);
+                  setOpen(false);
+                  setQuery([]);
+                }}
+                href={{
+                  pathname,
+                  query: {
+                    a: "search",
+                    keywords: searchAuthorState ? `@${queryText}` : queryText,
+                  },
+                }}
+              >
+                <Search
+                  size={16}
+                  className="text-gray-200 cursor-pointer opacity-80 "
+                />
+              </Link>
+            </div>
             {query?.map((item) => (
               <React.Fragment key={item.id}>
                 <Link
