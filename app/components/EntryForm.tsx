@@ -39,37 +39,6 @@ type NewEntries =
     }[]
   | null;
 
-type Entries =
-  | {
-      created_at: string;
-      id: string;
-      title: string;
-      updated_at: string | null;
-      user_id: string;
-      entry: {
-        created_at: string;
-        id: string;
-        text: string;
-        topic_id: string;
-        updated_at: string | null;
-        user_id: string;
-        vote: number;
-        favorites: {
-          created_at: string;
-          entryId: string | null;
-          id: string | null;
-          userId: string | null;
-        }[];
-        profiles: {
-          avatar_url: string | null;
-          id: string;
-          updated_at: string | null;
-          username: string | null;
-        } | null;
-      }[];
-    }[]
-  | null;
-
 interface EntryFormProps {
   params?: {
     slug: string;
@@ -93,7 +62,6 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
     alias: "",
     spoiler: "",
   });
-  // const [spoiler, setSpoiler] = useState("");
 
   //* create new entry
   const handleSubmitNewEntry = async () => {
@@ -148,7 +116,9 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
       .from("topics")
       .upsert({
         user_id: session?.user.id as string,
-        title: searchParams?.q as string,
+        title: searchParams?.q
+          ? (searchParams.q as string)
+          : (params?.slug[0] as string),
       })
       .select("*");
 
@@ -179,9 +149,6 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
     <div className="flex flex-col gap-2">
       <div className="flex flex-col px-3 pb-4 bg-neutral-900">
         <div className="flex items-center justify-start h-12 gap-2 ">
-          {/* <button className="px-2 py-1 text-sm rounded bg-neutral-700">
-            http://
-          </button> */}
           <TextareaDialog
             // value="http://"
             value={linkInput.link}
@@ -239,7 +206,10 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
       </div>
       <Button
         onClick={() => {
-          !params ? handleSubmitNewTopic() : handleSubmitNewEntry();
+          // !params ? handleSubmitNewTopic() : handleSubmitNewEntry();
+          (entry?.length as number) === 0
+            ? handleSubmitNewTopic()
+            : handleSubmitNewEntry();
         }}
         className="self-end w-20 text-gray-200 transition bg-emerald-600 hover:bg-emerald-600 hover:text-gray-400"
       >
