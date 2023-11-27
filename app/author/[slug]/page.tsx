@@ -80,7 +80,7 @@ export default async function AuthorPage({
         : TO
     );
 
-  if (authorPage?.length === 0) {
+  if (authorPage?.length === 0 && author?.username !== slug) {
     return (
       <div className="lg:ml-64 lg:pl-10 pt-28 ">
         <h3 className="pt-4 text-2xl font-bold text-gray-200">
@@ -90,6 +90,34 @@ export default async function AuthorPage({
           the page you requested was not found. you may return to home page or
           keep looking using advanced search.{" "}
         </p>
+      </div>
+    );
+  }
+
+  if (author?.username === slug) {
+    return (
+      <div className="lg:ml-64 lg:pl-10 pt-28 ">
+        {/* Head */}
+        <div>
+          {/* Commands */}
+          <HeaderLink author={author} />
+          {/* Entry List */}
+          <AuthorNavbar author={author} favEntries={favEntries} />
+        </div>
+        <main className="pb-6 mt-2">
+          <AuthorEntry
+            // author={author}
+            authorPage={authorPage}
+            username={slug}
+            session={session}
+            favEntries={favEntries}
+          />
+          <Footer
+            searchParams={searchParams}
+            allEntriesLength={count}
+            favEntriesCount={favEntriesCount as number}
+          />
+        </main>
       </div>
     );
   }
