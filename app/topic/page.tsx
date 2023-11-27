@@ -4,9 +4,7 @@ import { cookies } from "next/headers";
 import EntryForm from "../components/EntryForm";
 
 interface AddNewTopicPageProps {
-  searchParams: {
-    q: string;
-  };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 const AddNewTopicPage = async ({ searchParams }: AddNewTopicPageProps) => {
@@ -24,7 +22,7 @@ const AddNewTopicPage = async ({ searchParams }: AddNewTopicPageProps) => {
       <div className="flex flex-row flex-grow w-full ">
         {/* <Sidebar topics={topics} /> */}
         <div className="flex flex-col flex-grow gap-2 ml-2 ">
-          <h1 className="text-2xl font-bold text-green-600 hover:underline hover:cursor-pointer">
+          <h1 className="text-2xl font-bold text-emerald-600 hover:underline hover:cursor-pointer">
             {searchParams.q}
           </h1>
           <div className="text-sm text-gray-200">
