@@ -11,25 +11,13 @@ import Link from "next/link";
 interface SingleEntryProps {
   topicTitle: string;
   params: {
-    slug: string[];
+    slug: string[] | string;
   };
   session?: Session | null;
   entry: any;
   beforeEntryCount: number;
   afterEntryCount: number;
   authorName: string;
-}
-
-async function getFavorites(entryId: string) {
-  const supabase = createClientComponentClient<Database>();
-
-  const { data: favoritesList } = await supabase
-    .from("favorites")
-    .select("*,profiles(username,id)")
-    .eq("entryId", entryId);
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
-  return favoritesList;
 }
 
 const SingleEntry = ({
@@ -43,7 +31,7 @@ const SingleEntry = ({
 }: SingleEntryProps) => {
   return (
     <>
-      <Topic topic={topicTitle} />
+      <Topic topic={topicTitle} params={params} />
       <TopicNavbar
         searchParams={params}
         topicTitle={topicTitle}

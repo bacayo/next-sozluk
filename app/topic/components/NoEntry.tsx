@@ -35,6 +35,7 @@ const NoEntry = ({
   return (
     <div className="flex flex-col flex-grow gap-4 pt-28 lg:ml-64 lg:pl-10">
       <Topic
+        params={params}
         onClick={() => {
           router.replace(pathname);
         }}

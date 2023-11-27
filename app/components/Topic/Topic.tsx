@@ -4,7 +4,7 @@ interface TopicProps {
   topic: any;
   onClick?: () => void;
   params: {
-    slug: string;
+    slug: string | string[];
   };
 }
 
