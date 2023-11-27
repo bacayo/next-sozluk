@@ -37,7 +37,9 @@ const HeaderLink = ({ author }: HeaderLinkProps) => {
   return (
     <div className="">
       <Link
-        href="/"
+        href={{
+          pathname: `/topic/${author?.username}`,
+        }}
         className="text-2xl font-bold hover:underline text-emerald-500 hover:text-emerald-600"
       >
         {author?.username}
