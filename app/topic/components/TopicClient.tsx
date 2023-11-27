@@ -44,7 +44,7 @@ const TopicClient = ({
     <div className="flex flex-col flex-grow gap-4 pt-28 lg:ml-64 lg:pl-10">
       <div>
         {/* <Topic onClick={handleOnClick} topic={entries![0].topics?.title} /> */}
-        <Topic onClick={handleOnClick} topic={topics?.title} />
+        <Topic onClick={handleOnClick} topic={topics?.title} params={params} />
         <TopicNavbar
           topics={topics}
           searchParams={searchParams}
