@@ -10,7 +10,7 @@ import LoginForm from "./login/LoginForm";
 import RegisterForm from "./register/RegisterForm";
 import RegisterUsername from "./components/RegisterUsername";
 
-export default async function Home() {
+export default async function Home({ params }: { params: { slug: string } }) {
   const cookieStore = cookies();
   const supabase = createServerComponentClient<Database>({
     cookies: () => cookieStore,
@@ -47,6 +47,7 @@ export default async function Home() {
           topics={topics}
           todayTopics={todayTopic}
           todayTopicCount={todayTopicCount as number}
+          params={params}
         />
       ) : (
         <div className="flex-grow mx-auto pt-60 lg:ml-64 lg:pl-10 ">

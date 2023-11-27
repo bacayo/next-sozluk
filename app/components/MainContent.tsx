@@ -36,6 +36,9 @@ interface MainContentProps {
   topics?: Topics;
   todayTopics?: Topics;
   todayTopicCount?: number;
+  params: {
+    slug: string;
+  };
 }
 
 const MainContent = ({
@@ -44,6 +47,7 @@ const MainContent = ({
   topics,
   todayTopics,
   todayTopicCount,
+  params,
 }: MainContentProps) => {
   const router = useRouter();
   const { navbarCategory } = useAppSelector((state) => state.setNavbarCategory);
@@ -101,6 +105,7 @@ const MainContent = ({
           <div key={entry.id}>
             <Topic
               topic={entry.topics?.title}
+              params={params}
               onClick={() => {
                 router.push(
                   `/topic/${entry.topics?.title.replaceAll(" ", "-")}`
