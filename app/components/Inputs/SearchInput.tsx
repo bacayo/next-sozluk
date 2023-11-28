@@ -33,7 +33,7 @@ const SearchInput = ({ placeholder }: SearchInputProps) => {
     let { data, error } = await supabase
       .from("topics")
       .select("*")
-      .ilike("title", `%${inputRef.current?.value}%`);
+      .ilike("title", `${inputRef.current?.value}%`);
 
     setQuery(data);
 
