@@ -166,12 +166,22 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
             labelSecondary="alias"
             onClick={() => {
               //@ts-ignore
-              inputRef.current.value += `[${linkInput.link} ${linkInput.alias}]`;
+              let cursorPosition = inputRef.current?.selectionStart;
+              let textBeforeCursorPosition = inputRef.current?.value.substring(
+                0,
+                cursorPosition as number
+              );
+              let textAfterCursorPosition = inputRef.current?.value.substring(
+                cursorPosition as number,
+                inputRef.current.value.length
+              );
+              //@ts-ignore
+              inputRef.current.value =
+                textBeforeCursorPosition +
+                `[${linkInput.link} ${linkInput.alias}]` +
+                textAfterCursorPosition;
             }}
           />
-          {/* <button className="px-2 py-1 text-sm rounded bg-neutral-700">
-            --spoiler--
-          </button> */}
           <TextareaDialog
             value={linkInput.spoiler}
             name="spoiler"
@@ -184,7 +194,20 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
             label="spoiler"
             onClick={() => {
               //@ts-ignore
-              inputRef.current.value += `--\`spoiler\`--\n${linkInput.spoiler}\n--\`spoiler\`--\n`;
+              let cursorPosition = inputRef.current?.selectionStart;
+              let textBeforeCursorPosition = inputRef.current?.value.substring(
+                0,
+                cursorPosition as number
+              );
+              let textAfterCursorPosition = inputRef.current?.value.substring(
+                cursorPosition as number,
+                inputRef.current.value.length
+              );
+              //@ts-ignore
+              inputRef.current.value =
+                textBeforeCursorPosition +
+                `--\`spoiler\`--\n${linkInput.spoiler}\n--\`spoiler\`--\n` +
+                textAfterCursorPosition;
             }}
           />
         </div>
