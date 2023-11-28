@@ -1,11 +1,10 @@
 "use client";
 
-import React from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { RiGithubFill, RiGoogleFill } from "react-icons/ri";
 import AuthInput from "../components/Inputs/AuthInput";
 import OAuthButton from "../components/OAuthButton";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { RiGoogleFill, RiGithubFill } from "react-icons/ri";
 
 import { useRouter } from "next/navigation";
 import { useToast } from "../components/ui/use-toast";
@@ -18,14 +17,10 @@ const RegisterForm = () => {
   } = useForm<FieldValues>();
 
   const supabase = createClientComponentClient();
-  const router = useRouter();
   const { toast } = useToast();
-  console.log(errors);
 
   const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
     // register with email and password
-
-    console.log(errors);
 
     try {
       const {
@@ -46,14 +41,8 @@ const RegisterForm = () => {
           variant: "destructive",
         });
       }
-      console.log({ user, error });
-      console.log({ formData });
-      console.log(errors);
-
-      // router.push("/");
     } catch (error) {
-      console.log(error);
-      console.log(errors);
+      throw new Error(error as string);
     }
   };
 
@@ -101,9 +90,12 @@ const RegisterForm = () => {
       <OAuthButton
         size="sm"
         label="sign in with google"
-        onClick={() => {
-          supabase.auth.signInWithOAuth({
+        onClick={async () => {
+          await supabase.auth.signInWithOAuth({
             provider: "google",
+            options: {
+              redirectTo: `${location.origin}/auth/callback`,
+            },
           });
         }}
         icon={RiGoogleFill}
@@ -111,8 +103,8 @@ const RegisterForm = () => {
       <OAuthButton
         size="sm"
         label="sign in with github"
-        onClick={() => {
-          supabase.auth.signInWithOAuth({
+        onClick={async () => {
+          await supabase.auth.signInWithOAuth({
             provider: "github",
           });
         }}
