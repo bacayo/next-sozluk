@@ -31,7 +31,7 @@ const OAuthButton = ({
 }: OAuthButtonProps) => {
   return (
     <Button
-      className="transition bg-emerald-600 text-neutral-200 hover:bg-green-700 hover:text-neutral-300"
+      className="w-full transition bg-emerald-600 text-neutral-200 hover:bg-green-700 hover:text-neutral-300"
       variant={variant}
       size={size}
       onClick={onClick}
