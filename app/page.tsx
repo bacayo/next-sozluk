@@ -1,14 +1,9 @@
-// import getCurrentUser from "./actions/getCurrentUser";
 import { Database } from "@/lib/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sub } from "date-fns";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import MainContent from "./components/MainContent";
-import AuthInput from "./components/Inputs/AuthInput";
-import OAuthButton from "./components/OAuthButton";
-import LoginForm from "./login/LoginForm";
-import RegisterForm from "./register/RegisterForm";
-import RegisterUsername from "./components/RegisterUsername";
 
 export default async function Home({ params }: { params: { slug: string } }) {
   const cookieStore = cookies();
@@ -32,28 +27,18 @@ export default async function Home({ params }: { params: { slug: string } }) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  const { data: newUser } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", session?.user.id)
-    .single();
+  if (session && !session?.user.user_metadata.username) {
+    redirect("/register");
+  }
 
   return (
-    <>
-      {newUser?.username ? (
-        <MainContent
-          randomEntries={randomEntries}
-          session={session}
-          topics={topics}
-          todayTopics={todayTopic}
-          todayTopicCount={todayTopicCount as number}
-          params={params}
-        />
-      ) : (
-        <div className="flex-grow mx-auto pt-60 lg:ml-64 lg:pl-10 ">
-          <RegisterUsername session={session} />
-        </div>
-      )}
-    </>
+    <MainContent
+      randomEntries={randomEntries}
+      session={session}
+      topics={topics}
+      todayTopics={todayTopic}
+      todayTopicCount={todayTopicCount as number}
+      params={params}
+    />
   );
 }
