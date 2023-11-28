@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import Container from "../components/Container";
 import RegisterForm from "./RegisterForm";
 import { Database } from "@/lib/supabase";
+import RegisterUsername from "./RegisterUsername";
 
 const RegisterPage = async () => {
   const cookieStore = cookies();
@@ -17,14 +18,22 @@ const RegisterPage = async () => {
     data: { session },
   } = await supabase.auth.getSession();
 
-  if (session) {
+  if (session && session.user.user_metadata.username) {
     redirect("/");
   }
 
   return (
     <div className="flex-grow pt-28 lg:ml-64 lg:pl-10 ">
-      <p className="py-2 text-lg font-bold">Register</p>
-      <RegisterForm />
+      {!session ? (
+        <>
+          <p className="py-2 text-lg font-bold">Register</p>
+          <RegisterForm />
+        </>
+      ) : (
+        <div className="pt-5">
+          <RegisterUsername session={session} />
+        </div>
+      )}
     </div>
   );
 };
