@@ -61,6 +61,7 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
     link: "http://",
     alias: "",
     spoiler: "",
+    seeThis: "",
   });
 
   //* create new entry
@@ -149,6 +150,34 @@ const EntryForm = ({ params, searchParams, entry }: EntryFormProps) => {
     <div className="flex flex-col gap-2">
       <div className="flex flex-col px-3 pb-4 bg-neutral-900">
         <div className="flex items-center justify-start h-12 gap-2 ">
+          <TextareaDialog
+            value={linkInput.seeThis}
+            name="seeThis"
+            onChange={handleLinkChange}
+            dialogButtonTitle="*"
+            dialogTitle="what should be referenced in asterisk?"
+            // value="http:/"
+            inputRef={inputRef}
+            secondaryInput={false}
+            label="reference"
+            onClick={() => {
+              //@ts-ignore
+              let cursorPosition = inputRef.current?.selectionStart;
+              let textBeforeCursorPosition = inputRef.current?.value.substring(
+                0,
+                cursorPosition as number
+              );
+              let textAfterCursorPosition = inputRef.current?.value.substring(
+                cursorPosition as number,
+                inputRef.current.value.length
+              );
+              //@ts-ignore
+              inputRef.current.value =
+                textBeforeCursorPosition +
+                `\`:${linkInput.seeThis}\`` +
+                textAfterCursorPosition;
+            }}
+          />
           <TextareaDialog
             // value="http://"
             value={linkInput.link}
